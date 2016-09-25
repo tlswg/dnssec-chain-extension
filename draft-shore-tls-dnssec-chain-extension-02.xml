@@ -436,7 +436,7 @@
 
     <t>
       In the future, proposed DNS protocol enhancements, such as the 
-      <xref target="CHAINQUERY"> EDNS Chain Query extension</xref> may 
+      <xref target="RFC7901"> EDNS Chain Query extension</xref> may 
       offer easy ways to obtain all of the chain data in one transaction
       with an upstream DNSSEC aware recursive server.
     </t>
@@ -592,6 +592,7 @@
     &rfc7120;
     &rfc7435;
     &rfc7672;
+    &rfc7901;
     <reference anchor="AGL"
                target="https://tools.ietf.org/id/draft-agl-dane-serializechain-01.txt">
       <front>
@@ -599,14 +600,6 @@
         Authentication</title>
         <author fullname="Adam Langley" initials="A" surname="Langley" />
         <organization>Google, Inc</organization>
-      </front>
-    </reference>
-    <reference anchor="CHAINQUERY"
-               target="https://tools.ietf.org/html/draft-ietf-dnsop-edns-chain-query">
-      <front>
-        <title>Chain Query Requests in DNS</title>
-        <author fullname="Paul Wouters" initials="P" surname="Wouters" />
-        <organization>Red Hat</organization>
       </front>
     </reference>
   </references>
