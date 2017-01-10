@@ -15,13 +15,14 @@
 <!ENTITY rfc7633 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7633.xml">
 <!ENTITY rfc7671 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7671.xml">
 <!ENTITY rfc7672 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7672.xml">
+<!ENTITY rfc7901 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7901.xml">
 ]>
 
 <!-- To do: -->
-<!--   check w/Adam Langley about including him as author -->
-<!--   verify that "length - 16" is a valid construction -->
 <!--   state machine diagram for the verification section? -->
-<!--   do we need to do anything about dnae records? -->
+<!--   raw public keys -->
+<!--   pseudocode -->
+<!--   test vectors -->
 
 
 <?rfc toc="yes"?>
@@ -73,9 +74,11 @@
     </address>
   </author>
 
-  <date year="2015" />
+  <date year="2017" />
   <area>Security</area>
   <workgroup>TLS</workgroup>
+  <keyword>DNSSEC</keyword>
+  <keyword>DANE</keyword>
   <abstract>
     <t>
       This draft describes a new TLS extension for
@@ -165,10 +168,16 @@
       library), and by using a TLS extension to deliver the data.
     </t>
 
+    <t>
+      As described in the <xref target="RFC6698">DANE specification</xref>, this
+      procuedure applies to the DANE authentication of X.509
+      certificates.  Other credentials may be supported, as
+      needed, in the future.
+    </t>
   </section> <!-- introduction -->
 
   <section title="DNSSEC Authentication Chain Extension">
-    <section title="Protocol">
+    <section title="Protocol, TLS 1.2">
 
     <t>
       A client MAY include an extension of type
@@ -190,7 +199,38 @@
       authentication chain.
     </t>
 
-    </section> <!-- protocol -->
+    </section> <!-- protocol 1.2 -->
+
+
+    <section title="Protocol, TLS 1.3">
+
+    <t>
+      A client MAY include an extension of type
+      "dnssec_chain" in the ClientHello.  The
+      "extension_data" field of this extension MUST be
+      empty.
+    </t>
+
+    <t>
+      Servers receiving a "dnssec_chain" extension in the
+      client hello, and which are capable of being authenticated
+      via DANE, SHOULD return a serialized authentication chain
+      in the Certificate message, using the format
+      described below.  The authentication chain will be an
+      extension to the certificate_list to which the
+      certificate being authenticated belongs.
+    </t>
+      
+    <t>
+      If a server is unable to return a
+      authentication chain, or does not wish to return a
+      authentication chain, it does not include a dnssec_chain
+      extension.  As with all TLS extensions, if the server
+      does not support this extension it will not return any
+      authentication chain.
+    </t>
+
+    </section> <!-- protocol 1.3 -->
 
     <section title="DNSSEC Authentication Chain Data">
 
@@ -208,13 +248,16 @@
       </figure>
 
       <t>
-	The AuthenticationChain structure is composed of a sequence of 
-	uncompressed wire format DNS resource record sets (RRset) and 
-	corresponding signatures (RRsig) records. The record sets and 
-	signatures are presented in validation order, starting at the 
-	target DANE record, followed by the DNSKEY and DS record sets 
-	for each intervening DNS zone up to a trust anchor chosen by the
-	server, typically the DNS root.
+	The AuthenticationChain structure is composed of a
+	sequence of uncompressed wire format DNS resource record
+	sets (RRset) and corresponding signatures (RRsig)
+	records. The record sets and signatures are typically
+	presented in the order presented by the DNS server
+	queried by the TLS server, although they MAY be
+	presented in validation order, starting at the target
+	DANE record, followed by the DNSKEY and DS record sets
+	for each intervening DNS zone up to a trust anchor
+	chosen by the server, typically the DNS root.
       </t>
 
       <t>
@@ -227,9 +270,9 @@
       </t>
 
       <t>
-	[TODO: mention that to reduce the size of the chain, the server
-	can deliver exactly one RRsig per RRset, namely the one used to
-	validate the chain as it is built.]
+    To reduce the size of the chain, the server MAY deliver
+    exactly one RRsig per RRset, the one used to validate
+    the chain as it is built.
       </t>
 
       <t>
@@ -237,7 +280,7 @@
 	DNS resource records. The format of the resource record is 
 	described in <xref target="RFC1035">RFC 1035</xref>, Section
 	3.2.1. The resource records SHOULD be presented in the canonical 
-	form and ordering as described in 
+	form, as described in 
 	<xref target="RFC4034">RFC 4034</xref>.
       </t>
 
@@ -249,7 +292,7 @@
       </figure>
 
       <t>
-	RRs within the RRset are ordered canonically, by treating
+	RRs within the RRset may be ordered canonically, by treating
 	the RDATA portion of each RR as a left-justified unsigned 
 	octet sequence in which the absence of an octet sorts before
 	a zero octet.
@@ -280,7 +323,7 @@
         presented.  The subsequent RRsets MUST be a sequence
         of DNSKEY and DS RRsets, starting with a DNSKEY RRset.  Each RRset
         MUST authenticate the preceding RRset:
-        <list type="symbols">
+        <list style="symbols">
           <t>A DNSKEY RRset must include the DNSKEY RR containing the
             public key used to verify the previous RRset.</t>
           <t>For a DS RRset, the set of key hashes MUST overlap with the
