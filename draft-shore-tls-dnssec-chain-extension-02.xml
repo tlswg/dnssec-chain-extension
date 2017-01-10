@@ -34,7 +34,7 @@
 <?rfc comments="yes"?>
 <?rfc inline="yes"?>
 
-<rfc docName="draft-shore-tls-dnssec-chain-extension-02"
+<rfc docName="draft-ietf-tls-dnssec-chain-extension-02"
      ipr="trust200902" category="std">
 
 <front>
