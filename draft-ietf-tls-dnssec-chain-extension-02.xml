@@ -10,10 +10,12 @@
 <!ENTITY rfc6066 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6066.xml">
 <!ENTITY rfc6698 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6698.xml">
 <!ENTITY rfc7120 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7120.xml">
+<!ENTITY rfc7250 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7250.xml">
 <!ENTITY rfc7435 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7435.xml">
 <!ENTITY rfc7633 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7633.xml">
 <!ENTITY rfc7671 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7671.xml">
 <!ENTITY rfc7672 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7672.xml">
+<!ENTITY rfc7901 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7901.xml">
 ]>
 
 <!-- To do: -->
@@ -21,7 +23,6 @@
 <!--   raw public keys -->
 <!--   pseudocode -->
 <!--   test vectors -->
-
 
 
 
@@ -232,13 +233,38 @@
       </t>
 
     </section> <!-- protocol 1.3 -->
+
+    <section title="Raw Public Keys">
+      <t>
+        <xref target="RFC7250" /> specifies the use of raw
+        public keys for both server and client
+        authentication in TLS 1.2.  It points out that in
+        cases where raw public keys are being used, code for
+        certificate path validation is not
+        required. However, DANE provides a mechanism for
+        securely binding a raw public key to a named entity
+        in the DNS, and when using DANE for authentication a
+        raw key may be validated using a path chaining back
+        to a DNSSEC trust root.  This has the added benefit
+        of mitigating an unknown key share attack, as
+        described in <xref target="I-D.barnes-dane-uks" />.
+      </t>
+
+      <t>The mechanism for encoding DNSSEC authentication
+        chains in a TLS extension, as described in this
+        document, is not limited to public keys encapsulated
+        in PKIX or X.509 containers but MAY be applied to raw
+        public keys and other representations, as well.
+      </t>
+    </section>
+
     
     <section title="DNSSEC Authentication Chain Data">
 
       <t>
-	The "extension_data" field of the "dnssec_chain" extension 
-	MUST contain a DNSSEC Authentication Chain encoded in the
-	following form:
+    The "extension_data" field of the "dnssec_chain" extension 
+    MUST contain a DNSSEC Authentication Chain encoded in the
+    following form:
       </t>
 
       <figure>
@@ -249,33 +275,33 @@
       </figure>
 
       <t>
-	The AuthenticationChain structure is composed of a sequence of 
-	uncompressed wire format DNS resource record sets (RRset) and 
-	corresponding signatures (RRsig) records. The record sets and 
-	signatures are presented in the order returned by the DNS server
+    The AuthenticationChain structure is composed of a sequence of 
+    uncompressed wire format DNS resource record sets (RRset) and 
+    corresponding signatures (RRsig) records. The record sets and 
+    signatures are presented in the order returned by the DNS server
     queried by the TLS server, although they MAY be returned in
     validation order, starting at the 
-	target DANE record, followed by the DNSKEY and DS record sets 
-	for each intervening DNS zone up to a trust anchor chosen by the
-	server, typically the DNS root.
+    target DANE record, followed by the DNSKEY and DS record sets 
+    for each intervening DNS zone up to a trust anchor chosen by the
+    server, typically the DNS root.
       </t>
 
       <t>
-	This sequence of native DNS wire format records enables easier
-	generation of the data structure on the server and easier 
-	verification of the data on client by means of existing DNS library
-	functions. However this document describes the data structure
-	in sufficient detail that implementers if they desire can write
-	their own code to do this.
+    This sequence of native DNS wire format records enables easier
+    generation of the data structure on the server and easier 
+    verification of the data on client by means of existing DNS library
+    functions. However this document describes the data structure
+    in sufficient detail that implementers if they desire can write
+    their own code to do this.
       </t>
 
       <t>
-	Each RRset in the chain is composed of a sequence of wire format
-	DNS resource records. The format of the resource record is 
-	described in <xref target="RFC1035">RFC 1035</xref>, Section
-	3.2.1. The resource records SHOULD be presented in the canonical 
-	form and ordering as described in 
-	<xref target="RFC4034">RFC 4034</xref>.
+    Each RRset in the chain is composed of a sequence of wire format
+    DNS resource records. The format of the resource record is 
+    described in <xref target="RFC1035">RFC 1035</xref>, Section
+    3.2.1. The resource records SHOULD be presented in the canonical 
+    form and ordering as described in 
+    <xref target="RFC4034">RFC 4034</xref>.
       </t>
 
       <figure>
@@ -286,17 +312,17 @@
       </figure>
 
       <t>
-	RRs within the RRset MAY be ordered canonically, by treating
-	the RDATA portion of each RR as a left-justified unsigned 
-	octet sequence in which the absence of an octet sorts before
-	a zero octet.
+    RRs within the RRset MAY be ordered canonically, by treating
+    the RDATA portion of each RR as a left-justified unsigned 
+    octet sequence in which the absence of an octet sorts before
+    a zero octet.
       </t>
 
       <t>
-	The RRsig record is in DNS wire format as described in 
-	<xref target="RFC4034">RFC 4034</xref>, Section 3.1. The 
-	signature portion of the RDATA, as described in the same
-	section, is the following:
+    The RRsig record is in DNS wire format as described in 
+    <xref target="RFC4034">RFC 4034</xref>, Section 3.1. The 
+    signature portion of the RDATA, as described in the same
+    section, is the following:
       </t>
 
       <figure>
@@ -307,9 +333,9 @@
       </figure>
 
       <t>
-	where, RRSIG_RDATA is the wire format of the RRSIG RDATA
-	fields with the Signer's Name field in canonical form and
-	the signature field excluded.
+    where, RRSIG_RDATA is the wire format of the RRSIG RDATA
+    fields with the Signer's Name field in canonical form and
+    the signature field excluded.
       </t>
 
       <t>
@@ -335,22 +361,22 @@
 
       <t>
         The final DNSKEY RRset in the authentication chain, containing 
-	the trust anchor may be omitted. If omitted, the client MUST 
-	verify that the key tag and owner name in the final RRSIG record 
-	correspond to a trust anchor. There may however be reason to 
-	include the trust anchor RRset and signature if clients are 
-	expected to use RFC5011 compliant key rollover functions inband 
-	via the chain data. In that case, they will need to periodically 
-	inspect flags (revocation and secure entry point flags) on the 
-	trust anchor DNSKEY RRset.
+    the trust anchor may be omitted. If omitted, the client MUST 
+    verify that the key tag and owner name in the final RRSIG record 
+    correspond to a trust anchor. There may however be reason to 
+    include the trust anchor RRset and signature if clients are 
+    expected to use RFC5011 compliant key rollover functions inband 
+    via the chain data. In that case, they will need to periodically 
+    inspect flags (revocation and secure entry point flags) on the 
+    trust anchor DNSKEY RRset.
       </t>
 
       <t>
-	For example, for an HTTPS server at
+    For example, for an HTTPS server at
         www.example.com, where there are zone cuts at "com."
         and "example.com.", the AuthenticationChain structure would
-	comprise the following RRsets and signatures (the data field
-	of the records are omitted here for brevity):
+    comprise the following RRsets and signatures (the data field
+    of the records are omitted here for brevity):
       </t>
 
       <figure>
@@ -373,53 +399,53 @@
 
       <t>
         Names that are aliased via CNAME and/or DNAME records may involve 
-	multiple branches of the DNS tree. In this case the authentication 
-	chain structure will be composed of a sequence of these multiple 
-	intersecting branches. DNAME chains should omit unsigned CNAME 
-	records that may have been synthesized in the response from a DNS 
-	resolver. Wildcard DANE records will need to include the wildcard 
-	name, and negative proof (i.e. NSEC or NSEC3 records) that 
-	no closer name exists MUST be included.
+    multiple branches of the DNS tree. In this case the authentication 
+    chain structure will be composed of a sequence of these multiple 
+    intersecting branches. DNAME chains should omit unsigned CNAME 
+    records that may have been synthesized in the response from a DNS 
+    resolver. Wildcard DANE records will need to include the wildcard 
+    name, and negative proof (i.e. NSEC or NSEC3 records) that 
+    no closer name exists MUST be included.
       </t>
 
       <figure>
         <artwork>
 
-	  A CNAME example:
+      A CNAME example:
 
-	  _443._tcp.www.example.com.   IN   CNAME    ca.example.net.
-	  ca.example.net.              IN   TLSA     2 0 1 ...
+      _443._tcp.www.example.com.   IN   CNAME    ca.example.net.
+      ca.example.net.              IN   TLSA     2 0 1 ...
 
-	  Here the authentication chain structure is composed of two
-	  consecutive chains, one for _443._tcp.www.example.com/CNAME 
-	  and one for ca.example.net/TLSA. The second chain can omit 
-	  the record sets at the end that overlap with the first.
+      Here the authentication chain structure is composed of two
+      consecutive chains, one for _443._tcp.www.example.com/CNAME 
+      and one for ca.example.net/TLSA. The second chain can omit 
+      the record sets at the end that overlap with the first.
 
-	  TLS DNSSEC chain components:
+      TLS DNSSEC chain components:
 
-	  _443._tcp.www.example.com. CNAME
-	  RRSIG(_443._tcp.www.example.com. CNAME)
-	  example.com. DNSKEY
-	  RRSIG(example.com. DNSKEY)
-	  example.com. DS
-	  RRSIG(example.com. DS)
-	  com. DNSKEY
-	  RRSIG(com. DNSKEY)
-	  com. DS
-	  RRSIG(com. DS)
-	  . DNSKEY
-	  RRSIG(. DNSKEY)
+      _443._tcp.www.example.com. CNAME
+      RRSIG(_443._tcp.www.example.com. CNAME)
+      example.com. DNSKEY
+      RRSIG(example.com. DNSKEY)
+      example.com. DS
+      RRSIG(example.com. DS)
+      com. DNSKEY
+      RRSIG(com. DNSKEY)
+      com. DS
+      RRSIG(com. DS)
+      . DNSKEY
+      RRSIG(. DNSKEY)
 
-	  ca.example.net. TLSA
-	  RRSIG(ca.example.net. TLSA)
-	  example.net. DNSKEY
-	  RRSIG(example.net. DNSKEY)
-	  example.net. DS
-	  RRSIG(example.net. DS)
-	  net. DNSKEY
-	  RRSIG(net. DNSKEY)
-	  net. DS
-	  RRSIG(net. DS)
+      ca.example.net. TLSA
+      RRSIG(ca.example.net. TLSA)
+      example.net. DNSKEY
+      RRSIG(example.net. DNSKEY)
+      example.net. DS
+      RRSIG(example.net. DS)
+      net. DNSKEY
+      RRSIG(net. DNSKEY)
+      net. DS
+      RRSIG(net. DS)
 
         </artwork>
       </figure>
@@ -483,7 +509,7 @@
 
     <t>
       In the future, proposed DNS protocol enhancements, such as the 
-      <xref target="I-D.ietf-dnsop-edns-client-subnet"> EDNS Chain Query extension</xref> may 
+      <xref target="RFC7901"> EDNS Chain Query extension</xref> may 
       offer easy ways to obtain all of the chain data in one transaction
       with an upstream DNSSEC aware recursive server.
     </t>
@@ -492,7 +518,7 @@
 
 
   <section title="Caching and Regeneration of the Authentication Chain"
-	   anchor="sec_caching">
+       anchor="sec_caching">
     <t>
       DNS records have Time To Live (TTL) parameters, and DNSSEC
       signatures have validity periods (specifically signature expiration
@@ -637,12 +663,26 @@
     &rfc5011;
     &rfc5905;
     &rfc7120;
+    &rfc7250;
     &rfc7435;
     &rfc7672;
+    &rfc7901;
     <?rfc include="reference.I-D.agl-dane-serializechain.xml"?>
-    <?rfc include="reference.I-D.draft-ietf-dnsop-edns-client-subnet-07.xml"?>
+    <?rfc include="reference.I-D.draft-barnes-dane-uks-00.xml"?>
   </references>
 
+
+  <section title="Updates from -01">
+    <t>
+      <list style="symbols">
+        <t>Added TLS 1.3 support</t>
+        <t>Added section describing applicability to raw
+          public keys</t>
+        <t>Softened language about record order</t>
+      </list>
+    </t>
+  </section>
+  
   <section title="Updates from -00">
     <t>
       <list style="symbols">
