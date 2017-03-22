@@ -20,7 +20,6 @@
 
 <!-- To do: -->
 <!--   state machine diagram for the verification section? -->
-<!--   raw public keys -->
 <!--   pseudocode -->
 <!--   test vectors -->
 
@@ -242,19 +241,24 @@
         authentication in TLS 1.2.  It points out that in
         cases where raw public keys are being used, code for
         certificate path validation is not
-        required. However, DANE provides a mechanism for
+        required. However, DANE, when used in conjunction
+        with the dnssec_chain extension, provides a mechanism for
         securely binding a raw public key to a named entity
         in the DNS, and when using DANE for authentication a
         raw key may be validated using a path chaining back
         to a DNSSEC trust root.  This has the added benefit
         of mitigating an unknown key share attack, as
-        described in <xref target="I-D.barnes-dane-uks" />.
+        described in <xref target="I-D.barnes-dane-uks" />,
+        since it effectively augments the raw public key
+        with the server's name and provides a means to
+        commit both the server and the client to using that
+        binding. 
       </t>
 
       <t>The mechanism for encoding DNSSEC authentication
         chains in a TLS extension, as described in this
         document, is not limited to public keys encapsulated
-        in PKIX or X.509 containers but MAY be applied to raw
+        in X.509 containers but MAY be applied to raw
         public keys and other representations, as well.
       </t>
     </section>
@@ -479,13 +483,13 @@
 
     <t>
       The domain name of the server MUST be that included in
-      the TLS Server Name Indication extension
-      <xref target="RFC6066" /> when present. If the Server Name 
-      Indication extension is not present, or if the server does not 
-      recognize the provided name and wishes to proceed with the handshake 
-      rather than to abort the connection, the server uses the
-      domain name associated with the server IP address to
-      which the connection has been established.
+      the TLS server_name extension <xref target="RFC6066"
+      /> when present. If the server_name extension is not
+      present, or if the server does not recognize the
+      provided name and wishes to proceed with the handshake
+      rather than to abort the connection, the server uses
+      the domain name associated with the server IP address
+      to which the connection has been established.
     </t>
 
     <t>
