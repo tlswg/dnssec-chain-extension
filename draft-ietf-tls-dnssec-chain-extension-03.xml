@@ -60,9 +60,9 @@
 
   <author fullname="Shumon Huque" initials="S"
           surname="Huque">
-    <organization>Verisign Labs</organization>
+    <organization>Salesforce</organization>
     <address>
-      <email>shuque@verisign.com</email>
+      <email>shumon.huque@gmail.com</email>
     </address>
   </author>
 
@@ -254,6 +254,40 @@
         commit both the server and the client to using that
         binding. 
       </t>
+
+      <t>
+        The UKS attack is possible in situations in which
+        the association between a domain name and a public
+        key is not tightly bound, as in the case in DANE in
+        which a client either ignores the name in
+        certificate (as specified in <xref target="RFC7671"
+        /> or there is no attestation of trust outside of
+        the DNS.  The vulnerability arises in the following
+        situations: 
+      </t>
+      <t>
+        <list style="symbols">
+          <t>If the client does not verify the identity in the
+            server's certificate (as recommended in Section
+            5.1 of [RFC7671]), then an attacker can induce the
+            client to accept an unintended identity for the
+            server, 
+          </t>
+
+          <t>If the client allows the use of raw public keys
+            in TLS, then it will not receive any
+            indication of the server's identity in the TLS
+            channel, and is thus unable to check that the
+            server's identity is as intended.
+          </t>
+        </list>
+      </t>
+
+      <t>The mechanism for conveying DNSSEC validation
+        chains described in this document results in a
+        commitment by both parties, via the TLS
+        handshake, to a domain name which has been validated
+        as belonging to the owner name.</t>
 
       <t>The mechanism for encoding DNSSEC authentication
         chains in a TLS extension, as described in this
@@ -676,6 +710,14 @@
     <?rfc include="reference.I-D.draft-barnes-dane-uks-00.xml"?>
   </references>
 
+  <section title="Updates from -01 and -02">
+    <t>
+      <list style="symbols">
+        <t>Editorial updates for style and consistency</t>
+        <t>Updated discussion of UKS attack</t>
+      </list>
+    </t>
+  </section>
 
   <section title="Updates from -01">
     <t>
