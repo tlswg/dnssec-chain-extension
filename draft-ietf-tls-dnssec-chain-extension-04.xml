@@ -108,8 +108,9 @@
       for transport of a DNS record set serialized with the
       <xref target="RFC4034">DNSSEC signatures</xref> needed
       to authenticate that record set.  The intent of this
-      proposal is to allow TLS clients to perform <xref
-      target="RFC6698">DANE authentication</xref> of a TLS
+      proposal is to allow TLS clients to perform DANE
+      Authentication <xref target="RFC6698" />
+      <xref target="RFC7671" /> of a TLS
       server certificate without performing
       additional DNS record lookups and incurring the
       associated latency penalty. It also provides the
@@ -167,8 +168,9 @@
     </t>
 
     <t>
-      As described in the <xref target="RFC6698">DANE specification</xref>, this
-      procuedure applies to the DANE authentication of X.509
+      As described in the DANE specification <xref target="RFC6698" />
+      <xref target="RFC7671" />, this
+      procedure applies to the DANE authentication of X.509
       certificates.  Other credentials may be supported, as
       needed, in the future.
     </t>
@@ -509,7 +511,7 @@
     </t>
 
     <t>When the goal is to perform DANE authentication 
-       <xref target="RFC6698" /> of the 
+       <xref target="RFC6698" /> <xref target="RFC7671" /> of the 
        server's X.509 certificate, the DNS record set to be
        serialized is a TLSA record set corresponding to the 
        server's domain name.
@@ -593,9 +595,8 @@
       If the authentication chain is 
       correctly verified, the client then performs DANE
       authentication of the server according to the
-      <xref target="RFC6698">DANE TLS protocol</xref>, 
-      and the additional protocol requirements outlined
-      in <xref target="RFC7671" />.
+      DANE TLS protocol <xref target="RFC6698" />
+      <xref target="RFC7671" />.
     </t>
 
   </section> <!-- verification -->
