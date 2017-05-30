@@ -11,7 +11,6 @@
 <!ENTITY rfc6698 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6698.xml">
 <!ENTITY rfc7120 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7120.xml">
 <!ENTITY rfc7250 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7250.xml">
-<!ENTITY rfc7435 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7435.xml">
 <!ENTITY rfc7633 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7633.xml">
 <!ENTITY rfc7671 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7671.xml">
 <!ENTITY rfc7672 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7672.xml">
@@ -136,11 +135,11 @@
       easier to provision a validating resolver, or are
       less likely to experience traffic interference from
       misconfigured middleboxes. Furthermore, SMTP MTAs usually
-      employ <xref target="RFC7435">Opportunistic Security</xref>,
+      employ <xref target="RFC7672">Opportunistic Security</xref>,
       in which the presence of the DNS TLSA records is used to determine
       whether to enforce an authenticated TLS connection.
-      Hence <xref target="RFC7672">DANE authentication of SMTP
-      MTAs</xref> will typically not use this mechanism.
+      Hence DANE authentication of SMTP MTAs will typically not use 
+      this mechanism.
     </t>
 
     <t>
@@ -704,7 +703,6 @@
     &rfc5905;
     &rfc7120;
     &rfc7250;
-    &rfc7435;
     &rfc7672;
     &rfc7901;
     <?rfc include="reference.I-D.agl-dane-serializechain.xml"?>
