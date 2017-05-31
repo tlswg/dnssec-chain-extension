@@ -298,7 +298,8 @@
     </section>
 
     
-    <section title="DNSSEC Authentication Chain Data">
+    <section title="DNSSEC Authentication Chain Data"
+	     anchor="auth_chain_data">
 
       <t>
     The "extension_data" field of the "dnssec_chain" extension 
@@ -316,13 +317,7 @@
       <t>
     The AuthenticationChain structure is composed of a sequence of 
     uncompressed wire format DNS resource record sets (RRset) and 
-    corresponding signatures (RRsig) records. The record sets and 
-    signatures are presented in the order returned by the DNS server
-    queried by the TLS server, although they MAY be returned in
-    validation order, starting at the 
-    target DANE record, followed by the DNSKEY and DS record sets 
-    for each intervening DNS zone up to a trust anchor chosen by the
-    server, typically the DNS root.
+    corresponding signatures (RRSIG) records.
       </t>
 
       <t>
@@ -358,6 +353,8 @@
       </t>
 
       <t>
+    Each RRset in the sequence is followed by its associated
+    RRsig record.
     The RRsig record is in DNS wire format as described in 
     <xref target="RFC4034">RFC 4034</xref>, Section 3.1. The 
     signature portion of the RDATA, as described in the same
@@ -378,44 +375,42 @@
       </t>
 
       <t>
-        The first RRset in the chain MUST contain the DANE records being
-        presented.  The subsequent RRsets MUST be a sequence
-        of DNSKEY and DS RRsets, starting with a DNSKEY RRset.  Each RRset
-        MUST authenticate the preceding RRset:</t>
-      <t>
-
-        <list style="symbols">
-          <t>A DNSKEY RRset must include the DNSKEY RR containing the
-            public key used to verify the previous RRset.</t>
-          <t>For a DS RRset, the set of key hashes MUST overlap with the
-            preceding set of DNSKEY records.</t>
-        </list>
+        The first RRset in the chain MUST contain the TLSA record set
+	being presented. However, if the owner name of the TLSA record
+	set is an alias (CNAME or DNAME), then it MUST be preceded by the
+	chain of alias records needed to resolve it. DNAME chains should
+	omit unsigned CNAME records that may have been synthesized in the
+	response from a DNS resolver. If the TLSA record set was synthesized
+	by a DNS wildcard, it MUST be followed by NSEC or NSEC3 records
+	that prove that there was no explicit match of the TLSA record
+	name and no closer wildcard match.
       </t>
 
       <t>
-        In addition, a DNSKEY RRset followed by a DS RRset MUST be
-        self-signed, in the sense that its RRSIG MUST verify under one
-        of the keys in the DNSKEY RRSET.
+	The subsequent RRsets MUST contain the full sequence
+	of DNS records needed to authenticate the TLSA record set from the
+	server's trust anchor. Typically this means a sequence of DNSKEY
+	and DS RRsets that cover all zones from the target zone containing
+	the TLSA record set to the trust anchor zone. Ideally, this
+	sequence should be presented in validation order, where each
+	RRset authenticates the preceding RRset. However TLS clients
+	should be prepared to receive these records in any order.
       </t>
 
       <t>
-        The final DNSKEY RRset in the authentication chain, containing 
-    the trust anchor may be omitted. If omitted, the client MUST 
-    verify that the key tag and owner name in the final RRSIG record 
-    correspond to a trust anchor. There may however be reason to 
-    include the trust anchor RRset and signature if clients are 
-    expected to use RFC5011 compliant key rollover functions inband 
-    via the chain data. In that case, they will need to periodically 
-    inspect flags (revocation and secure entry point flags) on the 
-    trust anchor DNSKEY RRset.
+        The final DNSKEY RRset in the authentication chain corresponds
+	to the trust anchor (typically the DNS root). This trust anchor 
+	is also preconfigured in the TLS client, but including it in the 
+	response from the server permits TLS clients to use the automated 
+	trust anchor rollover mechanism defined in RFC 5011 
+	<xref target="RFC5011" /> to update their configured trust anchor.
       </t>
 
       <t>
-    For example, for an HTTPS server at
+	The following is an example of the records in the
+	AuthenticationChain structure for the HTTPS server at
         www.example.com, where there are zone cuts at "com."
-        and "example.com.", the AuthenticationChain structure would
-    comprise the following RRsets and signatures (the data field
-    of the records are omitted here for brevity):
+        and "example.com." (record data are omitted here for brevity):
       </t>
 
       <figure>
@@ -438,64 +433,9 @@
 
       <t>
         Names that are aliased via CNAME and/or DNAME records may involve 
-    multiple branches of the DNS tree. In this case the authentication 
-    chain structure will be composed of a sequence of these multiple 
-    intersecting branches. DNAME chains should omit unsigned CNAME 
-    records that may have been synthesized in the response from a DNS 
-    resolver. Wildcard DANE records will need to include the wildcard 
-    name, and negative proof (i.e. NSEC or NSEC3 records) that 
-    no closer name exists MUST be included.
-      </t>
-
-      <figure>
-        <artwork>
-
-      A CNAME example:
-
-      _443._tcp.www.example.com.   IN   CNAME    ca.example.net.
-      ca.example.net.              IN   TLSA     2 0 1 ...
-
-      Here the authentication chain structure is composed of two
-      consecutive chains, one for _443._tcp.www.example.com/CNAME 
-      and one for ca.example.net/TLSA. The second chain can omit 
-      the record sets at the end that overlap with the first.
-
-      TLS DNSSEC chain components:
-
-      _443._tcp.www.example.com. CNAME
-      RRSIG(_443._tcp.www.example.com. CNAME)
-      example.com. DNSKEY
-      RRSIG(example.com. DNSKEY)
-      example.com. DS
-      RRSIG(example.com. DS)
-      com. DNSKEY
-      RRSIG(com. DNSKEY)
-      com. DS
-      RRSIG(com. DS)
-      . DNSKEY
-      RRSIG(. DNSKEY)
-
-      ca.example.net. TLSA
-      RRSIG(ca.example.net. TLSA)
-      example.net. DNSKEY
-      RRSIG(example.net. DNSKEY)
-      example.net. DS
-      RRSIG(example.net. DS)
-      net. DNSKEY
-      RRSIG(net. DNSKEY)
-      net. DS
-      RRSIG(net. DS)
-
-        </artwork>
-      </figure>
-
-      <t>
-        Note as well that if a user has a specific TLSA
-        record for port 443, and a different wildcard
-        covering other ports, attackers MUST NOT be able to
-        substitute the wildcard TLSA RRset for the more
-        specific one for port 443.  DNSSEC wildcards must
-        not be confused with the X.509 wildcards.
+	multiple branches of the DNS tree. In this case, the authentication
+	chain structure needs to include DS and DNSKEY record sets that
+	cover all the necessary branches.
       </t>
 
     </section> <!-- authentication chain data -->
@@ -537,12 +477,14 @@
     </t>
 
     <t>
-      The components of the authentication chain are built by
+      The components of the authentication chain are typically built by
       starting at the target record set and its corresponding RRSIG.
       Then traversing the DNS tree upwards towards the trust anchor
       zone (normally the DNS root), for each zone cut, the DNSKEY and
-      DS RRsets and their signatures are added. If DNS responses
-      messages contain any domain names utilizing name compression
+      DS RRsets and their signatures are added. However, see
+      <xref target="auth_chain_data" /> for specific processing needed for
+      aliases and wildcards. If DNS responses messages contain any
+      domain names utilizing name compression
       <xref target="RFC1035"/>, then they must be uncompressed.
     </t>
 
