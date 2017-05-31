@@ -452,7 +452,7 @@
        <xref target="RFC6698" /> <xref target="RFC7671" /> of the 
        server, the DNS record set to be
        serialized is a TLSA record set corresponding to the 
-       server's domain name.
+       server's domain name, protocol, and port number.
     </t>
 
     <t>
@@ -546,16 +546,19 @@
 
     <t>
       The trust anchor may change periodically, e.g. when the operator
-      of the trust anchor zone performs a DNSSEC key rollover. Managed 
-      key rollovers typically use a process that can be tracked by 
-      verifiers allowing them to automatically update their trust 
-      anchors, as described in <xref target="RFC5011" />. TLS clients 
-      using this specification are also expected to use such a mechanism 
-      to keep their trust anchors updated. Some operating systems may 
-      have a system-wide service to maintain and keep the root trust 
-      anchor up to date.  In such cases, the TLS client application 
+      of the trust anchor zone performs a DNSSEC key rollover. TLS
+      clients using this specification MUST implement a mechanism to
+      keep their trust anchors up to date. They could use the method
+      defined in <xref target="RFC5011" /> to perform trust anchor
+      updates inband in TLS, by tracking the introduction of new keys
+      seen in the trust anchor DNSKEY RRset. However, alternative
+      mechanisms external to TLS may also be utilized. Some operating systems
+      may have a system-wide service to maintain and keep the root trust
+      anchor up to date. In such cases, the TLS client application
       could simply reference that as its trust anchor, periodically 
-      checking whether it has changed.
+      checking whether it has changed. Some applications may prefer to
+      implement trust anchor updates as part of their automated software
+      updates.
     </t>
 
   </section> <!-- trust anchor maintenance  -->
