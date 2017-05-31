@@ -1,0 +1,11 @@
+$TTL 86400
+.	SOA a.root-servers.net. nstld.verisign-grs.com. (
+			2017053100 ; serial
+			1800       ; refresh (30 minutes)
+			900        ; retry (15 minutes)
+			604800     ; expire (1 week)
+			86400      ; minimum (1 day)
+			)
+com.	DS	50254 8 2 31783ab244ff3c376d0788afc2c672b8546c0dfcd83739650b5c6ea726fea382
+org.	DS	65161 8 1 b9634d1382aba5b707eb8aa6865bcfb0427d427c
+org.	DS	65161 8 2 735a9da73930ea116c78376f51f80165a685d2d84ee4020246fa3222077f26b7
