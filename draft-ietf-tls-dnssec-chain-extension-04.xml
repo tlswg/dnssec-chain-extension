@@ -83,7 +83,7 @@
       signatures needed to authenticate that record set.  The
       intent of this proposal is to allow TLS clients to
       perform DANE authentication of a TLS server
-      certificate without needing to perform additional DNS
+      without needing to perform additional DNS
       record lookups.  It will typically not be used for
       general DNSSEC validation of TLS endpoint names.
     </t>
@@ -110,7 +110,7 @@
       proposal is to allow TLS clients to perform DANE
       Authentication <xref target="RFC6698" />
       <xref target="RFC7671" /> of a TLS
-      server certificate without performing
+      server without performing
       additional DNS record lookups and incurring the
       associated latency penalty. It also provides the
       ability to avoid potential problems with TLS clients
@@ -170,8 +170,7 @@
       As described in the DANE specification <xref target="RFC6698" />
       <xref target="RFC7671" />, this
       procedure applies to the DANE authentication of X.509
-      certificates.  Other credentials may be supported, as
-      needed, in the future.
+      certificates or raw public keys <xref target="RFC7250" />.
     </t>
     
   </section> <!-- introduction -->
@@ -511,7 +510,7 @@
 
     <t>When the goal is to perform DANE authentication 
        <xref target="RFC6698" /> <xref target="RFC7671" /> of the 
-       server's X.509 certificate, the DNS record set to be
+       server, the DNS record set to be
        serialized is a TLSA record set corresponding to the 
        server's domain name.
     </t>
@@ -581,7 +580,7 @@
       A TLS client making use of this specification, and
       which receives a DNSSEC authentication chain extension
       from a server, SHOULD use this information to perform
-      DANE authentication of the server certificate.  In
+      DANE authentication of the server.  In
       order to do this, it uses the mechanism specified by
       the <xref target="RFC4035">DNSSEC protocol</xref>.
       This mechanism is sometimes implemented in a DNSSEC
@@ -629,7 +628,10 @@
       TLS extension identifier, indicates to the client that the server must
       deliver the authentication chain when asked to do so. (The X.509 TLS
       Feature Extension is the same mechanism used to deliver other mandatory 
-      signals, such as OCSP "must staple" assertions.)
+      signals, such as OCSP "must staple" assertions.) Mandating this
+      extension for Raw Public Key authentication (where there are no X.509
+      certificates) could employ configuration mechanisms external to the
+      TLS protocol.
     </t>
 
   </section>
