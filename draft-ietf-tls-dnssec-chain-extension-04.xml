@@ -384,11 +384,12 @@
       </t>
 
       <t>
-	The subsequent RRsets MUST contain the full sequence
+	The subsequent RRsets MUST contain the full set
 	of DNS records needed to authenticate the TLSA record set from the
-	server's trust anchor. Typically this means a sequence of DNSKEY
+	server's trust anchor. Typically this means a set of DNSKEY
 	and DS RRsets that cover all zones from the target zone containing
-	the TLSA record set to the trust anchor zone.
+	the TLSA record set to the trust anchor zone. The TLS client should
+	be prepared to receive this set of RRsets in any order.
       </t>
 
       <t>
