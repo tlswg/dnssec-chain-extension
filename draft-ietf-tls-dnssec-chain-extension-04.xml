@@ -369,7 +369,7 @@
       </figure>
 
       <t>
-    where, RRSIG_RDATA is the wire format of the RRSIG RDATA
+    where RRSIG_RDATA is the wire format of the RRSIG RDATA
     fields with the Signer's Name field in canonical form and
     the signature field excluded.
       </t>
