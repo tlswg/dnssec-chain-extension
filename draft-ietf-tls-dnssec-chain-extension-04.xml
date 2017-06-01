@@ -380,10 +380,7 @@
 	set is an alias (CNAME or DNAME), then it MUST be preceded by the
 	chain of alias records needed to resolve it. DNAME chains should
 	omit unsigned CNAME records that may have been synthesized in the
-	response from a DNS resolver. If the TLSA record set was synthesized
-	by a DNS wildcard, it MUST be followed by NSEC or NSEC3 records
-	that prove that there was no explicit match of the TLSA record
-	name and no closer wildcard match.
+	response from a DNS resolver.
       </t>
 
       <t>
@@ -391,10 +388,21 @@
 	of DNS records needed to authenticate the TLSA record set from the
 	server's trust anchor. Typically this means a sequence of DNSKEY
 	and DS RRsets that cover all zones from the target zone containing
-	the TLSA record set to the trust anchor zone. Ideally, this
-	sequence should be presented in validation order, where each
-	RRset authenticates the preceding RRset. However TLS clients
-	should be prepared to receive these records in any order.
+	the TLSA record set to the trust anchor zone.
+      </t>
+
+      <t>
+        Names that are aliased via CNAME and/or DNAME records may involve
+	multiple branches of the DNS tree. In this case, the authentication
+	chain structure needs to include DS and DNSKEY record sets that
+	cover all the necessary branches.
+      </t>
+
+      <t>
+	If the TLSA record set was synthesized by a DNS wildcard, the
+	chain must include the signed NSEC or NSEC3 records that prove
+	that there was no explicit match of the TLSA record name and no
+	closer wildcard match.
       </t>
 
       <t>
@@ -430,13 +438,6 @@
           RRSIG(. DNSKEY)
         </artwork>
       </figure>
-
-      <t>
-        Names that are aliased via CNAME and/or DNAME records may involve 
-	multiple branches of the DNS tree. In this case, the authentication
-	chain structure needs to include DS and DNSKEY record sets that
-	cover all the necessary branches.
-      </t>
 
     </section> <!-- authentication chain data -->
   </section> <!-- dnssec authentication chain extension -->
@@ -489,10 +490,10 @@
     </t>
 
     <t>
-      In the future, proposed DNS protocol enhancements, such as the 
-      <xref target="RFC7901"> EDNS Chain Query extension</xref> may 
-      offer easy ways to obtain all of the chain data in one transaction
-      with an upstream DNSSEC aware recursive server.
+      Newer DNS protocol enhancements, such as the <xref target="RFC7901">
+      EDNS Chain Query extension</xref> if supported, may offer easier ways
+      to obtain all of the chain data in one transaction with an upstream
+      DNSSEC aware recursive server.
     </t>
 
   </section> <!-- construction -->
