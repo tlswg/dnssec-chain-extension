@@ -16,7 +16,8 @@ example.org.	SOA sns.dns.icann.org. noc.dns.icann.org. (
 _443._tcp.www.example.org.	CNAME	dane311.example.org.
 EOSOA
 ldns-dane -c www.example.com.crt create example.org. 443 3 1 1 | sed 's/^_443._tcp/dane311/g' >> example.org
-ldns-signzone -i 20170526 -e 20170616 -o example.org example.org Kexample.org.+013+44384
+ldns-dane -c www.example.com.crt create example.org. 25 3 1 1 | sed 's/^_25/*/g' >> example.org
+ldns-signzone -b -n -i 20170526 -e 20170616 -o example.org example.org Kexample.org.+013+44384
 
 cat >example.com <<EOSOA
 \$TTL 3600
@@ -65,6 +66,16 @@ ldns-signzone -i 20170526 -e 20170616 -o example.net example.net Kexample.net.+0
 	grep '	DNSKEY' root.signed
 ) > example.com.chain
 ./verify-chain root.ds example.com.chain example.com 25 > /dev/null && echo "Wildcard case successful"
+
+(	grep '^\*\._tcp\..*	TLSA'  example.org.signed | sed 's/^\*/_25/g'
+	grep '^dlm7rss9pejqnh0ev6h7k1ikqqcl5mae.example.org.' example.org.signed
+	grep '	DNSKEY' example.org.signed
+	grep '^example\.org.*	DS' org.signed
+	grep '	DNSKEY' org.signed
+	grep '^org\..*	DS' root.signed
+	grep '	DNSKEY' root.signed
+) > example.org.chain
+./verify-chain root.ds example.org.chain example.org 25 > /dev/null && echo "NSEC3 wildcard case successful"
 
 (	grep '^_443\._tcp\..*	CNAME'  example.org.signed
 	grep '^dane311\..*	TLSA'  example.org.signed
