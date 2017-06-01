@@ -697,7 +697,7 @@
   <section title="Test vectors">
     <t>
        The provided test vectors will authenticate the certificate
-       uses with https://example.com/, https://example.net/ and
+       used with https://example.com/, https://example.net/ and
        https://example.org/ at the time of writing:
     </t>
     <figure>
