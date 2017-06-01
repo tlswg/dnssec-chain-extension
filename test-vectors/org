@@ -6,5 +6,4 @@ org.	SOA a0.org.afilias-nst.info. noc.afilias-nst.info. (
 		604800     ; expire (1 week)
 		86400      ; minimum (1 day)
 		)
-example.org.	DS	33 8 1 f9c51e01fe7084ca73c363d37c73bcaf9c92f0c8
-example.org.	DS	33 8 2 5bf07be55795d7d6209dfa407e26cd3cebde5a8882f4da07369461be8d5ca6c6
+example.org.	DS	44384 13 2 ec307e2efc8f0117ed96ab48a513c8003e1d9121f1ff11a08b4cdd348d090aa6
