@@ -1,0 +1,9 @@
+$TTL 900
+org.	SOA a0.org.afilias-nst.info. noc.afilias-nst.info. (
+		2012508852 ; serial
+		1800       ; refresh (30 minutes)
+		900        ; retry (15 minutes)
+		604800     ; expire (1 week)
+		86400      ; minimum (1 day)
+		)
+example.org.	DS	44384 13 2 ec307e2efc8f0117ed96ab48a513c8003e1d9121f1ff11a08b4cdd348d090aa6

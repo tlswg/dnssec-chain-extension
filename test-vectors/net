@@ -1,0 +1,9 @@
+$TTL 900
+net.	SOA a.gtld-servers.net. nstld.verisign-grs.com. (
+			1496223831 ; serial
+			1800       ; refresh (30 minutes)
+			900        ; retry (15 minutes)
+			604800     ; expire (1 week)
+			86400      ; minimum (1 day)
+			)
+example.net.	DS	48085 13 2 7c1998ce683df60e2fa41460c453f88f463dac8cd5d074277b4a7c04502921be
