@@ -4,7 +4,6 @@
 <!ENTITY rfc2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
 <!ENTITY rfc4034 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4034.xml">
 <!ENTITY rfc4035 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4035.xml">
-<!ENTITY rfc4330 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4330.xml">
 <!ENTITY rfc5011 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5011.xml">
 <!ENTITY rfc5246 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5246.xml">
 <!ENTITY rfc5905 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5905.xml">
@@ -18,7 +17,6 @@
 ]>
 
 <!-- To do: -->
-<!--   check w/Adam Langley about including him as author -->
 <!--   verify that "length - 16" is a valid construction -->
 <!--   state machine diagram for the verification section? -->
 <!--   do we need to do anything about dnae records? -->
@@ -33,7 +31,7 @@
 <?rfc comments="yes"?>
 <?rfc inline="yes"?>
 
-<rfc docName="draft-shore-tls-dnssec-chain-extension-02"
+<rfc docName="draft-ietf-tls-dnssec-chain-extension-01"
      ipr="trust200902" category="std">
 
 <front>
@@ -73,7 +71,7 @@
     </address>
   </author>
 
-  <date year="2015" />
+  <date year="2016" />
   <area>Security</area>
   <workgroup>TLS</workgroup>
   <abstract>
@@ -109,15 +107,15 @@
       to authenticate that record set.  The intent of this
       proposal is to allow TLS clients to perform <xref
       target="RFC6698">DANE authentication</xref> of a TLS
-      server certificate without performing perform
+      server certificate without performing
       additional DNS record lookups and incurring the
       associated latency penalty. It also provides the
       ability to avoid potential problems with TLS clients
       being unable to look up DANE records because of an
       interfering or broken middlebox on the path between
-      the endpoint and a DNS server. And lastly, it allows a
+      the client and a DNS server. And lastly, it allows a
       TLS client to validate DANE records itself without
-      needing access to a validating DNS resolver to which
+      necessarily needing access to a validating DNS resolver to which
       it has a secure connection.  It will typically not be
       used for general DNSSEC validation of endpoint names,
       but is more appropriate for validation of DANE TLSA records.
@@ -127,7 +125,7 @@
       This mechanism is useful
       for TLS applications that need to address the problems
       described above, typically web browsers or VoIP and
-      XMPP services. It may not be relevant for many other
+      XMPP applications. It may not be relevant for many other
       applications. For example, SMTP MTAs are usually
       located in data centers, may tolerate
       extra DNS lookup latency, are on servers where it is
@@ -159,7 +157,7 @@
       This specification is based on Adam Langley's original
       proposal for serializing DNSSEC authentication chains
       and delivering them in an X.509 certificate extension
-      <xref target="AGL" />. It modifies the approach by using
+      <xref target="I-D.agl-dane-serializechain" />. It modifies the approach by using
       wire format DNS records in the serialized data (assuming
       that the data will be prepared and consumed by a DNS-specific
       library), and by using a TLS extension to deliver the data.
@@ -180,15 +178,23 @@
     <t>
       Servers receiving a "dnssec_chain" extension in the
       client hello, and which are capable of being authenticated
-      via DANE, SHOULD return a serialized authentication chain
+      via DANE, MAY return a serialized authentication chain
       in the extended ServerHello message, using the format
-      described below.  If a server is unable to return a
-      authentication chain, or does not wish to return a
+      described below.  If a server is unable to return an
+      authentication chain, or does not wish to return an
       authentication chain, it does not include a dnssec_chain
       extension.  As with all TLS extensions, if the server
       does not support this extension it will not return any
       authentication chain.
     </t>
+
+    <t>
+      A client must not be able to force a server to
+      perform lookups on arbitrary domain names using this
+      mechanism.  Therefore, a server MUST NOT construct
+      chains for domain names other than its own.
+    </t>
+
 
     </section> <!-- protocol -->
 
@@ -203,7 +209,7 @@
       <figure>
         <artwork>
 
-          opaque AuthenticationChain&lt;0..2^16-1&gt;;
+          opaque AuthenticationChain&lt;0..2^16-1&gt;
         </artwork>
       </figure>
 
@@ -224,12 +230,6 @@
 	functions. However this document describes the data structure
 	in sufficient detail that implementers if they desire can write
 	their own code to do this.
-      </t>
-
-      <t>
-	[TODO: mention that to reduce the size of the chain, the server
-	can deliver exactly one RRsig per RRset, namely the one used to
-	validate the chain as it is built.]
       </t>
 
       <t>
@@ -279,8 +279,10 @@
         The first RRset in the chain MUST contain the DANE records being
         presented.  The subsequent RRsets MUST be a sequence
         of DNSKEY and DS RRsets, starting with a DNSKEY RRset.  Each RRset
-        MUST authenticate the preceding RRset:
-        <list type="symbols">
+        MUST authenticate the preceding RRset:</t>
+      <t>
+
+        <list style="symbols">
           <t>A DNSKEY RRset must include the DNSKEY RR containing the
             public key used to verify the previous RRset.</t>
           <t>For a DS RRset, the set of key hashes MUST overlap with the
@@ -339,8 +341,8 @@
 	intersecting branches. DNAME chains should omit unsigned CNAME 
 	records that may have been synthesized in the response from a DNS 
 	resolver. Wildcard DANE records will need to include the wildcard 
-	name as well as a negative proof (i.e. NSEC or NSEC3 records) that 
-	no closer name exists.
+	name, and negative proof (i.e. NSEC or NSEC3 records) that 
+	no closer name exists MUST be included.
       </t>
 
       <figure>
@@ -385,6 +387,14 @@
         </artwork>
       </figure>
 
+      <t>
+        Note as well that if a user has a specific TLSA
+        record for port 443, and a different wildcard
+        covering other ports, attackers MUST NOT be able to
+        substitute the wildcard TLSA RRset for the more
+        specific one for port 443.  DNSSEC wildcards must
+        not be confused with the X.509 wildcards.
+      </t>
 
     </section> <!-- authentication chain data -->
   </section> <!-- dnssec authentication chain extension -->
@@ -436,7 +446,7 @@
 
     <t>
       In the future, proposed DNS protocol enhancements, such as the 
-      <xref target="CHAINQUERY"> EDNS Chain Query extension</xref> may 
+      <xref target="I-D.ietf-dnsop-edns-client-subnet"> EDNS Chain Query extension</xref> may 
       offer easy ways to obtain all of the chain data in one transaction
       with an upstream DNSSEC aware recursive server.
     </t>
@@ -534,7 +544,7 @@
       TLS clients need roughly accurate time in order to properly
       authenticate these signatures. This could be achieved by running
       a time synchronization protocol like NTP <xref target="RFC5905" /> 
-      or SNTP <xref target="RFC4330" />, which are already widely used 
+      or SNTP <xref target="RFC5905" />, which are already widely used 
       today. TLS clients MUST support a mechanism to track and rollover 
       the trust anchor key, or be able to avail themselves of a service 
       that does this, as described in <xref target="sec_trustmaint" />.
@@ -563,6 +573,7 @@
       This document also benefited from discussions with and
       review from the following people: Viktor Dukhovni,
       Daniel Kahn Gillmor, Jeff Hodges, Allison Mankin, Patrick McManus, 
+      Rick van Rein,
       Gowri Visweswaran, Duane Wessels, Nico Williams, and Paul Wouters.
     </t>
 
@@ -586,34 +597,31 @@
   </references>
 
   <references title="Informative References">
-    &rfc4330;
     &rfc5011;
     &rfc5905;
     &rfc7120;
     &rfc7435;
     &rfc7672;
-    <reference anchor="AGL"
-               target="https://tools.ietf.org/id/draft-agl-dane-serializechain-01.txt">
-      <front>
-        <title>Serializing DNS Records with DNSSEC
-        Authentication</title>
-        <author fullname="Adam Langley" initials="A" surname="Langley" />
-        <organization>Google, Inc</organization>
-      </front>
-    </reference>
-    <reference anchor="CHAINQUERY"
-               target="https://tools.ietf.org/html/draft-ietf-dnsop-edns-chain-query">
-      <front>
-        <title>Chain Query Requests in DNS</title>
-        <author fullname="Paul Wouters" initials="P" surname="Wouters" />
-        <organization>Red Hat</organization>
-      </front>
-    </reference>
+    <?rfc include="reference.I-D.agl-dane-serializechain.xml"?>
+    <?rfc include="reference.I-D.draft-ietf-dnsop-edns-client-subnet-07.xml"?>
   </references>
 
-  <section title="Pseudocode example">
-    <t>[code goes here]</t>
-  </section> <!-- pseudocode -->
+  <section title="Updates from -00">
+    <t>
+      <list style="symbols">
+        <t>Edits based on comments from Rick van Rein</t>
+        <t>Warning about not overloading X.509 wildcards on
+          DNSSEC wildcards (from V. Dukhovny) </t>
+        <t>Added MUST include negative proof on
+        wildcards (from V. Dukhovny) </t>
+        <t>Removed "TODO" on allowing the server to deliver
+          only one signature per RRset</t>
+        <t>Added additional minor edits suggested by Viktor
+        Dukhovny</t>
+        
+      </list>
+    </t>
+  </section> <!-- updates -->
 
   <section title="Test vector">
     <t>[data go here]</t>
