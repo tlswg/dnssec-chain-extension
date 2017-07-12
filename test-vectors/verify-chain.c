@@ -90,8 +90,8 @@ int main(int argc, const char **argv)
 	else if ((r = getdns_list_set_dict(to_validate, 0, request)))
 		fprintf(stderr, "Error setting request");
 
-	else if ((dnssec_status = getdns_validate_dnssec2(to_validate,
-	    support, tas, 1496233729, 0) != GETDNS_DNSSEC_SECURE)) {
+	else if ((dnssec_status = getdns_validate_dnssec(
+	    to_validate, support, tas) != GETDNS_DNSSEC_SECURE)) {
 		fprintf(stderr, "Chain did not validate");
 		r = dnssec_status;
 
