@@ -220,11 +220,9 @@
         Servers receiving a "dnssec_chain" extension in the
         ClientHello, and which are capable of being authenticated
         via DANE, SHOULD return a serialized authentication chain
-        in the Certificate message associated with the end
-        entity certificate being validated, using the format
-        described below.  The authentication chain will be an
-        extension to the certificate_list to which the
-        certificate being authenticated belongs.
+        in the extension block of the Certificate message containing
+        the end entity certificate being validated, using the format
+        described below.
       </t>
 
       <t>
