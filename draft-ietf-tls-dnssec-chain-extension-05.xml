@@ -331,9 +331,7 @@
     Each RRset in the chain is composed of a sequence of wire format
     DNS resource records. The format of the resource record is 
     described in <xref target="RFC1035">RFC 1035</xref>, Section
-    3.2.1. The resource records SHOULD be presented in the canonical 
-    form and ordering as described in 
-    <xref target="RFC4034">RFC 4034</xref>.
+    3.2.1.
       </t>
 
       <figure>
@@ -342,13 +340,6 @@
           RR(i) = owner | type | class | TTL | RDATA length | RDATA
         </artwork>
       </figure>
-
-      <t>
-    RRs within the RRset MAY be ordered canonically, by treating
-    the RDATA portion of each RR as a left-justified unsigned 
-    octet sequence in which the absence of an octet sorts before
-    a zero octet.
-      </t>
 
       <t>
     Each RRset in the sequence is followed by its associated
