@@ -316,7 +316,7 @@
       <t>
     The AuthenticationChain structure is composed of a sequence of 
     uncompressed wire format DNS resource record sets (RRset) and 
-    corresponding signatures (RRSIG) records.
+    corresponding signatures (RRSIG) record sets.
       </t>
 
       <t>
@@ -344,8 +344,8 @@
 
       <t>
     Each RRset in the sequence is followed by its associated
-    RRsig record.
-    The RRsig record is in DNS wire format as described in 
+    RRsig record set.
+    The RRsig record wire format is described in
     <xref target="RFC4034">RFC 4034</xref>, Section 3.1. The 
     signature portion of the RDATA, as described in the same
     section, is the following:
