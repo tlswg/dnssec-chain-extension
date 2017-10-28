@@ -5,6 +5,7 @@
 <!ENTITY rfc4034 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4034.xml">
 <!ENTITY rfc4035 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4035.xml">
 <!ENTITY rfc5011 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5011.xml">
+<!ENTITY rfc5155 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5155.xml">
 <!ENTITY rfc5246 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5246.xml">
 <!ENTITY rfc5905 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5905.xml">
 <!ENTITY rfc6066 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6066.xml">
@@ -515,7 +516,7 @@
       from a server, SHOULD use this information to perform
       DANE authentication of the server.  In
       order to do this, it uses the mechanism specified by
-      the <xref target="RFC4035">DNSSEC protocol</xref>.
+      the DNSSEC protocol <xref target="RFC4035"/> <xref target="RFC5155"/>.
       This mechanism is sometimes implemented in a DNSSEC
       validation engine or library.
     </t>
@@ -576,7 +577,7 @@
 
     <t> 
       The security considerations of the normatively referenced RFCs 
-      (1035, 4034, 4035, 5246, 6066, 6698, 7633, 7671) all pertain to 
+      all pertain to 
       this extension. Since the server is delivering a chain of DNS 
       records and signatures to the client, it MUST rebuild the chain
       in accordance with TTL and signature expiration of
@@ -629,6 +630,7 @@
     &rfc2119;
     &rfc4034;
     &rfc4035;
+    &rfc5155;
     &rfc5246;
     &rfc6066;
     &rfc6698;
