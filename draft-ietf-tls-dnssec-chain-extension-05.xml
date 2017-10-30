@@ -12,15 +12,12 @@
 <!ENTITY rfc6698 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6698.xml">
 <!ENTITY rfc7120 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7120.xml">
 <!ENTITY rfc7250 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7250.xml">
+<!ENTITY rfc7633 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7633.xml">
 <!ENTITY rfc7671 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7671.xml">
 <!ENTITY rfc7672 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7672.xml">
 <!ENTITY rfc7901 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7901.xml">
 ]>
 
-<!-- To do: -->
-<!--   state machine diagram for the verification section? -->
-<!--   pseudocode -->
-<!--   test vectors -->
 
 
 
@@ -520,13 +517,7 @@
       validation engine or library.
     </t>
 
-    <t>
-      If the authentication chain is 
-      correctly verified, the client then performs DANE
-      authentication of the server according to the
-      DANE TLS protocol <xref target="RFC6698" />
-      <xref target="RFC7671" />.
-    </t>
+    <!-- TODO: Add a precis of the algorithm here -->
 
     <t>
       Clients MAY cache the server's validated TLS RRset or other
@@ -564,6 +555,7 @@
   <section title="Mandating use of this extension" anchor="must_staple">
 
     <t>
+
       Green field applications that are designed to always employ this
       extension, could of course unconditionally mandate its use.
     </t>
@@ -805,6 +797,7 @@ com.  86400  IN  RRSIG  ( DS 13 1 86400 20170612000000
         20170530000000 47005 .
         tFldEx7SQI43PIzn1ib/oZTko+Q+gRuOLcALoSA0WQRh1yXSV1752p1n3imhK
         8y3m+LZSLDSBHEocXIiRHWdFg== )
+
         </artwork>
       </figure>
       <t>A hex dump of the wire format data of this content is:</t>
