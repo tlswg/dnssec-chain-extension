@@ -520,14 +520,20 @@
       validation engine or library.
     </t>
 
-    <!-- TODO: Add a precis of the algorithm here -->
-
     <t>
       If the authentication chain is 
       correctly verified, the client then performs DANE
       authentication of the server according to the
       DANE TLS protocol <xref target="RFC6698" />
       <xref target="RFC7671" />.
+    </t>
+
+    <t>
+      Clients MAY cache the server's validated TLS RRset or other
+      validated portions of the chain as an optimization to save
+      signature verification work for future connections. The
+      period of such caching MUST NOT exceed the TTL associated with
+      those records.
     </t>
 
   </section> <!-- verification -->
