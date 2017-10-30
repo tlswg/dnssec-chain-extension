@@ -12,7 +12,6 @@
 <!ENTITY rfc6698 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6698.xml">
 <!ENTITY rfc7120 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7120.xml">
 <!ENTITY rfc7250 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7250.xml">
-<!ENTITY rfc7633 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7633.xml">
 <!ENTITY rfc7671 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7671.xml">
 <!ENTITY rfc7672 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7672.xml">
 <!ENTITY rfc7901 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7901.xml">
@@ -559,16 +558,33 @@
   <section title="Mandating use of this extension" anchor="must_staple">
 
     <t>
-      A TLS server certificate MAY mandate the use of this extension by means 
-      of the X.509 TLS Feature Extension described in <xref target="RFC7633" />.
-      This X.509 certificate extension, when populated with the dnssec_chain
-      TLS extension identifier, indicates to the client that the server must
-      deliver the authentication chain when asked to do so. (The X.509 TLS
-      Feature Extension is the same mechanism used to deliver other mandatory 
-      signals, such as OCSP "must staple" assertions.) Mandating this
-      extension for Raw Public Key authentication (where there are no X.509
-      certificates) could employ configuration mechanisms external to the
-      TLS protocol.
+      Green field applications that are designed to always employ this
+      extension, could of course unconditionally mandate its use.
+    </t>
+
+    <t>
+      If TLS applications want to mandate the use of this extension for
+      specific servers, clients could maintain a whitelist of sites where
+      the use of this extension is forced. The client would refuse to
+      authenticate such servers if they failed to deliver this extension.
+      Client applications could also employ a Trust on First Use (TOFU) like
+      strategy, whereby they would record the fact that a server offered the
+      extension and use that knowledge to require it for subsequent connections.
+    </t>
+
+    <t>
+      This protocol currently provides no way for a server to prove that
+      it doesn't have a TLSA record. Hence absent whitelists, a client
+      misdirected to a server that has fraudulently acquired a public CA
+      issued certificate for the real server's name, could be induced to
+      establish a PKIX verified connection to the rogue server that precluded
+      DANE authentication. This could be solved by enhancing this protocol
+      to require that servers without TLSA records need to provide a DNSSEC
+      authentication chain that proves this (i.e. the chain includes NSEC or
+      NSEC3 records that demonstrate either the absence of the TLSA record,
+      or the absence of a secure delegation to the associated zone). Such an
+      enhancement would be impossible to deploy incrementally though since it
+      requires all TLS servers to support this protocol.
     </t>
 
   </section>
@@ -634,7 +650,6 @@
     &rfc5246;
     &rfc6066;
     &rfc6698;
-    &rfc7633;
     &rfc7671;
   </references>
 
