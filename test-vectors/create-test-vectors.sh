@@ -1,9 +1,21 @@
 #!/bin/sh
 
-ldns-signzone -i 20170530 -e 20170612 -o . root K.+013+47005
-ldns-signzone -i 20170529 -e 20170605 -o com com  Kcom.+013+18931
-ldns-signzone -i 20170525 -e 20170615 -o org org  Korg.+013+12651
-ldns-signzone -i 20170525 -e 20170615 -o net net  Knet.+013+00485
+#
+# root and org roll their ZSK
+#  com and org roll their KSK
+# example.com and example.net use a CSK (combined signing key)
+# 
+INCEPTION="20151103"
+EXPIRATION="20181128"
+
+ldns-signzone -i $INCEPTION -e $EXPIRATION -o . root K.+013+47005 K.+013+31918 K.+013+02635 && \
+	grep -v '	RRSIG	.* 2635 \. ' root.signed > root.signed.2 && \
+	mv root.signed.2 root.signed
+ldns-signzone -i $INCEPTION -e $EXPIRATION -o com com  Kcom.+013+18931 Kcom.+013+28809 Kcom.+013+34327
+ldns-signzone -i $INCEPTION -e $EXPIRATION -o org org  Korg.+013+12651 Korg.+013+49352 Korg.+013+09523 Korg.+013+47417 && \
+	grep -v '	RRSIG	.* 47417 org\. ' org.signed > org.signed.2 && \
+	mv org.signed.2 org.signed
+ldns-signzone -i $INCEPTION -e $EXPIRATION -o net net  Knet.+013+00485 Knet.+013+10713
 cat >example.org <<EOSOA
 \$TTL 3600
 example.org.	SOA sns.dns.icann.org. noc.dns.icann.org. (
@@ -17,7 +29,7 @@ _443._tcp.www.example.org.	CNAME	dane311.example.org.
 EOSOA
 ldns-dane -c www.example.com.crt create example.org. 443 3 1 1 | sed 's/^_443._tcp/dane311/g' >> example.org
 ldns-dane -c www.example.com.crt create example.org. 25 3 1 1 | sed 's/^_25/*/g' >> example.org
-ldns-signzone -b -n -i 20170526 -e 20170616 -o example.org example.org Kexample.org.+013+44384
+ldns-signzone -b -n -i $INCEPTION -e $EXPIRATION -o example.org example.org Kexample.org.+013+44384 Kexample.org.+013+56566
 
 cat >example.com <<EOSOA
 \$TTL 3600
@@ -31,7 +43,7 @@ example.com.	SOA sns.dns.icann.org. noc.dns.icann.org. (
 EOSOA
 ldns-dane -c www.example.com.crt create example.com. 443 3 1 1 | sed 's/^_443/*/g' >> example.com
 ldns-dane -c www.example.com.crt create www.example.com. 443 3 1 1 >> example.com
-ldns-signzone -i 20170526 -e 20170616 -o example.com example.com Kexample.com.+013+01870
+ldns-signzone -i $INCEPTION -e $EXPIRATION -o example.com example.com Kexample.com.+013+01870
 
 cat >example.net <<EOSOA
 \$TTL 3600
@@ -44,7 +56,7 @@ example.net.	SOA sns.dns.icann.org. noc.dns.icann.org. (
 		)
 example.net.	DNAME	example.com.
 EOSOA
-ldns-signzone -i 20170526 -e 20170616 -o example.net example.net Kexample.net.+013+48085
+ldns-signzone -i $INCEPTION -e $EXPIRATION -o example.net example.net Kexample.net.+013+48085
 
 
 (	grep '^_443\._tcp\.www\..*	TLSA' example.com.signed
