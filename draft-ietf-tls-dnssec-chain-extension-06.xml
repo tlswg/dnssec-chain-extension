@@ -30,7 +30,7 @@
 <?rfc comments="yes"?>
 <?rfc inline="yes"?>
 
-<rfc docName="draft-ietf-tls-dnssec-chain-extension-05"
+<rfc docName="draft-ietf-tls-dnssec-chain-extension-06"
      ipr="trust200902" category="std">
 
 <front>
@@ -70,7 +70,7 @@
     </address>
   </author>
 
-  <date year="2017" />
+  <date year="2018" />
   <area>Security</area>
   <workgroup>TLS</workgroup>
   <abstract>
@@ -517,7 +517,11 @@
       validation engine or library.
     </t>
 
-    <!-- TODO: Add a precis of the algorithm here -->
+    <t>
+        If the authentication chain is correctly verified, the client then
+        performs DANE authentication of the server according to the DANE TLS
+        protocol <xref target="RFC6698"/> <xref target="RFC7671"/>.
+    </t>
 
     <t>
       Clients MAY cache the server's validated TLS RRset or other
