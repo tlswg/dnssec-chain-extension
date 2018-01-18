@@ -556,7 +556,7 @@
   </section> <!-- trust anchor maintenance  -->
 
 
-  <section title="Mandating use of this extension" anchor="must_staple">
+  <section title="Mandating use of this extension" anchor="mandating">
 
     <t>
 
@@ -607,6 +607,8 @@
       today. TLS clients MUST support a mechanism to track and rollover 
       the trust anchor key, or be able to avail themselves of a service 
       that does this, as described in <xref target="sec_trustmaint" />.
+      Security considerations related to mandating the use of this
+      extension are described in <xref target="mandating" />.
     </t>
 
   </section>
