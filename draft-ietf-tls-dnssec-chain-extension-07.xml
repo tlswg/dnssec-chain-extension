@@ -528,11 +528,15 @@
     </t>
 
     <t>
-      Clients MAY cache the server's validated TLS RRset or other
+      Clients MAY cache the server's validated TLSA RRset or other
       validated portions of the chain as an optimization to save
       signature verification work for future connections. The
       period of such caching MUST NOT exceed the TTL associated with
-      those records.
+      those records. A client that possesses a validated and unexpired
+      TLSA RRset or the full chain in its cache does not need to send the
+      dnssec_chain extension for subsequent connections to the same TLS
+      server. It can use the cached information to perform DANE
+      authentication.
     </t>
 
   </section> <!-- verification -->
