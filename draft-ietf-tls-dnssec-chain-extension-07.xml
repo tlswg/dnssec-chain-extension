@@ -254,7 +254,7 @@
         The UKS attack is possible in situations in which
         the association between a domain name and a public
         key is not tightly bound, as in the case in DANE in
-        which a client either ignores the name in
+        which a client either ignores the name in the
         certificate (as specified in <xref target="RFC7671"
         /> or there is no attestation of trust outside of
         the DNS.  The vulnerability arises in the following
@@ -471,9 +471,9 @@
       zone (normally the DNS root), for each zone cut, the DNSKEY and
       DS RRsets and their signatures are added. However, see
       <xref target="auth_chain_data" /> for specific processing needed for
-      aliases and wildcards. If DNS responses messages contain any
+      aliases and wildcards. If DNS response messages contain any
       domain names utilizing name compression
-      <xref target="RFC1035"/>, then they must be uncompressed.
+      <xref target="RFC1035"/>, then they MUST be uncompressed.
     </t>
 
     <t>
