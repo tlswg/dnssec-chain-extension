@@ -260,7 +260,7 @@
         key is not tightly bound, as in the case in DANE in
         which a client either ignores the name in the
         certificate (as specified in <xref target="RFC7671"
-        /> or there is no attestation of trust outside of
+        />) or there is no attestation of trust outside of
         the DNS.  The vulnerability arises in the following
         situations: 
       </t>
