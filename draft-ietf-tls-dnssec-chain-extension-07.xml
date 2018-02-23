@@ -368,9 +368,11 @@
         The first RRset in the chain MUST contain the TLSA record set
 	being presented. However, if the owner name of the TLSA record
 	set is an alias (CNAME or DNAME), then it MUST be preceded by the
-	chain of alias records needed to resolve it. DNAME chains should
+	chain of alias records needed to resolve it. DNAME chains SHOULD
 	omit unsigned CNAME records that may have been synthesized in the
-	response from a DNS resolver.
+	response from a DNS resolver. (If unsigned synthetic CNAMES are
+        present, then the TLS client will just ignore them, as they are
+        not necessary to validate the chain.)
       </t>
 
       <t>
@@ -391,7 +393,7 @@
 
       <t>
 	If the TLSA record set was synthesized by a DNS wildcard, the
-	chain must include the signed NSEC or NSEC3 records that prove
+	chain MUST include the signed NSEC or NSEC3 records that prove
 	that there was no explicit match of the TLSA record name and no
 	closer wildcard match.
       </t>
