@@ -308,7 +308,7 @@
       <figure>
         <artwork>
 
-          opaque AuthenticationChain&lt;0..2^16-1&gt;
+          opaque AuthenticationChain&lt;1..2^16-1&gt;
         </artwork>
       </figure>
 
