@@ -457,9 +457,9 @@
       /> when present. If the server_name extension is not
       present, or if the server does not recognize the
       provided name and wishes to proceed with the handshake
-      rather than to abort the connection, the server uses
-      the domain name associated with the server IP address
-      to which the connection has been established.
+      rather than to abort the connection, the server picks
+      one of its configured domain names associated with the
+      server IP address to which the connection has been established.
     </t>
 
     <t>
