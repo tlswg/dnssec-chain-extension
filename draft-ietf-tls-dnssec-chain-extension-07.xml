@@ -679,43 +679,6 @@
     <?rfc include="reference.I-D.draft-barnes-dane-uks-00.xml"?>
   </references>
 
-  <section title="Updates from -01 and -02">
-    <t>
-      <list style="symbols">
-        <t>Editorial updates for style and consistency</t>
-        <t>Updated discussion of UKS attack</t>
-      </list>
-    </t>
-  </section>
-
-  <section title="Updates from -01">
-    <t>
-      <list style="symbols">
-        <t>Added TLS 1.3 support</t>
-        <t>Added section describing applicability to raw
-          public keys</t>
-        <t>Softened language about record order</t>
-      </list>
-    </t>
-  </section>
-  
-  <section title="Updates from -00">
-    <t>
-      <list style="symbols">
-        <t>Edits based on comments from Rick van Rein</t>
-        <t>Warning about not overloading X.509 wildcards on
-          DNSSEC wildcards (from V. Dukhovny) </t>
-        <t>Added MUST include negative proof on
-        wildcards (from V. Dukhovny) </t>
-        <t>Removed "TODO" on allowing the server to deliver
-          only one signature per RRset</t>
-        <t>Added additional minor edits suggested by Viktor
-        Dukhovny</t>
-        
-      </list>
-    </t>
-  </section> <!-- updates -->
-
   <section title="Test vectors">
     <t>
        The provided test vectors will authenticate the certificate
