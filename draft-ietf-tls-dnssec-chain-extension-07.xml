@@ -394,7 +394,8 @@
 
       <t>
 	If the TLSA record set was synthesized by a DNS wildcard, the
-	chain MUST include the signed NSEC or NSEC3 records that prove
+	chain MUST include the signed NSEC or <xref target="RFC5155">
+        NSEC3</xref> records that prove
 	that there was no explicit match of the TLSA record name and no
 	closer wildcard match.
       </t>
