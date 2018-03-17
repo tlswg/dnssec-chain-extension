@@ -628,9 +628,10 @@
 
     <t>This extension requires the registration of a new
       value in the TLS ExtensionsType registry.  The value
-      requested from IANA is 53. If the draft is adopted by
-      the WG, the authors expect to make an early allocation
-      request as specified in <xref target="RFC7120"  />.</t>
+      requested from IANA is 53, and the extension should
+      be marked "Recommended" in accordance with "IANA Registry
+      Updates for TLS and DTLS" <xref target="TLSIANA"/>.
+    </t>
 
   </section> <!-- iana considerations -->
 
@@ -673,7 +674,16 @@
           <editor fullname="Eric Rescorla" initials="E" surname="Rescorla" />
         </front>
     </reference>
+    <reference anchor="TLSIANA"
+        target="https://tools.ietf.org/html/draft-ietf-tls-iana-registry-updates">
+        <front>
+          <title>IANA Registry Updates for TLS and DTLS</title>
+          <author fullname="Joe Salowey" initials="J" surname="Salowey" />
+          <author fullname="Sean Turner" initials="S" surname="Turner" />
+        </front>
+    </reference>
   </references>
+
 
   <references title="Informative References">
     &rfc5011;
