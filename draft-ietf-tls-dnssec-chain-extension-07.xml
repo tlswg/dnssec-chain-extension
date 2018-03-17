@@ -119,11 +119,9 @@
       being unable to look up DANE records because of an
       interfering or broken middlebox on the path between
       the client and a DNS server. And lastly, it allows a
-      TLS client to validate DANE records itself without
-      necessarily needing access to a validating DNS resolver to which
-      it has a secure connection.  It will typically not be
-      used for general DNSSEC validation of endpoint names,
-      but is more appropriate for validation of DANE TLSA records.
+      TLS client to validate the server's DANE (TLSA) records
+      itself without needing access to a validating DNS resolver
+      to which it has a secure connection.
     </t>
 
     <t>
