@@ -517,7 +517,7 @@
     <t>
       A TLS client making use of this specification, and
       which receives a DNSSEC authentication chain extension
-      from a server, SHOULD use this information to perform
+      from a server, MUST use this information to perform
       DANE authentication of the server.  In
       order to do this, it uses the mechanism specified by
       the DNSSEC protocol <xref target="RFC4035"/> <xref target="RFC5155"/>.
