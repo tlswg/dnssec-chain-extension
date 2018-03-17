@@ -82,8 +82,8 @@
       intent of this proposal is to allow TLS clients to
       perform DANE authentication of a TLS server
       without needing to perform additional DNS
-      record lookups.  It will typically not be used for
-      general DNSSEC validation of TLS endpoint names.
+      record lookups.  It is not intended to be used to validate
+      the TLS server's address records.
     </t>
   </abstract>
 </front>
