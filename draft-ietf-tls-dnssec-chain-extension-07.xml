@@ -146,17 +146,14 @@
     </t>
 
     <t>
-      The extension described here allows a TLS client to
-      request in the ClientHello message that the DNS authentication
-      chain be returned in the (extended) ServerHello message.
-      If the server is configured for DANE authentication, then
-      it performs the appropriate DNS queries, builds the authentication
-      chain, and returns it to the client. The
-      server will usually use a previously cached authentication chain, but
-      it will need to rebuild it periodically as described in
-      <xref target="sec_caching" />. 
-      The client then authenticates the chain using a pre-configured 
-      trust anchor.
+      The extension described here allows a TLS client to request that
+      the TLS server return the DNSSEC authentication chain corresponding
+      to its DANE record. If the server is configured for DANE authentication,
+      then it performs the appropriate DNS queries, builds the authentication
+      chain, and returns it to the client. The server will usually use a
+      previously cached authentication chain, but it will need to rebuild it
+      periodically as described in <xref target="sec_caching" />. The client
+      then authenticates the chain using a pre-configured trust anchor.
     </t>
 
     <t>
