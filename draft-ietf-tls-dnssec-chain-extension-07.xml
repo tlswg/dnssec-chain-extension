@@ -198,13 +198,6 @@
       authentication chain.
     </t>
 
-    <t>
-      A client must not be able to force a server to
-      perform lookups on arbitrary domain names using this
-      mechanism.  Therefore, a server MUST NOT construct
-      chains for domain names other than its own.
-    </t>
-
     </section> <!-- protocol 1.2 -->
 
     <section title="Protocol, TLS 1.3">
