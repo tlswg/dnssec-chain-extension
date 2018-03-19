@@ -331,6 +331,8 @@
         <artwork>
 
           RR(i) = owner | type | class | TTL | RDATA length | RDATA
+
+          where RR(i) denotes the ith RR.
         </artwork>
       </figure>
 
