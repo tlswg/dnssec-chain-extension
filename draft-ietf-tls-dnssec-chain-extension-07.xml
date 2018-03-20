@@ -315,9 +315,7 @@
     This sequence of native DNS wire format records enables easier
     generation of the data structure on the server and easier 
     verification of the data on client by means of existing DNS library
-    functions. However this document describes the data structure
-    in sufficient detail that implementers if they desire can write
-    their own code to do this.
+    functions.
       </t>
 
       <t>
@@ -337,8 +335,17 @@
       </figure>
 
       <t>
+    The resource records that make up a RRset all have the same owner,
+    type and class, but different RDATA as specified
+    <xref="RFC2181">RFC 2181</xref>, Section 5.
+
     Each RRset in the sequence is followed by its associated
-    RRsig record set.
+    RRsig record set.  This RRset has the same owner and class as the
+    preceding RRset, but has type RRSIG.  The Type Covered 
+    field in the RDATA of the RRsigs identifies the type of the
+    preceding RRset as described in
+    <xref target="RFC4034">RFC 4034</xref>, Section 3.
+
     The RRsig record wire format is described in
     <xref target="RFC4034">RFC 4034</xref>, Section 3.1. The 
     signature portion of the RDATA, as described in the same
