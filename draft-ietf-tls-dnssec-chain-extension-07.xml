@@ -277,8 +277,7 @@
       <t>The mechanism for conveying DNSSEC validation
         chains described in this document results in a
         commitment by both parties, via the TLS
-        handshake, to a domain name which has been validated
-        as belonging to the owner name.</t>
+        handshake, to a validated domain name and EE key.</t>
 
       <t>The mechanism for encoding DNSSEC authentication
         chains in a TLS extension, as described in this
