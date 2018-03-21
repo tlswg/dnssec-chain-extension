@@ -604,6 +604,30 @@
 
   </section>
 
+
+  <section title="DANE and Traditional PKIX Interoperation" anchor="pkix-interop">
+
+    <t>
+      When DANE is being introduced incrementally into an existing
+      PKIX environment, there may be scenarios in which DANE
+      authentication for a server fails but PKIX succeeds, or vice versa.
+      What happens here depends on TLS client policy. If DANE authentication
+      fails, the client may decide to fallback to traditional PKIX
+      authentication. In order to do so efficiently within the same
+      TLS handshake, the TLS server needs to have provided the full
+      X.509 certificate chain. When TLS servers only support DANE-EE
+      or DANE-TA modes, they have the option to send a much smaller
+      certificate chain: just the EE certificate for the former, and
+      a short certificate chain from the DANE trust anchor to the EE
+      certificate for the latter. If the TLS server supports both DANE
+      and traditional PKIX, and wants to allow efficient PKIX fallback
+      within the same handshake, they should always provide the full
+      X.509 certificate chain.
+    </t>
+
+  </section>
+
+
   <section title="Security Considerations">
 
     <t> 
