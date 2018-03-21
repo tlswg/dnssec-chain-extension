@@ -188,7 +188,7 @@
     <t>
       Servers receiving a "dnssec_chain" extension in the
       ClientHello and which are capable of being authenticated
-      via DANE SHOULD return a serialized authentication chain
+      via DANE, return a serialized authentication chain
       in the extended ServerHello message using the format
       described below.  If a server is unable to return an
       authentication chain, or does not wish to return an
@@ -212,7 +212,7 @@
       <t>
         Servers receiving a "dnssec_chain" extension in the
         ClientHello, and which are capable of being authenticated
-        via DANE, SHOULD return a serialized authentication chain
+        via DANE, return a serialized authentication chain
         in the extension block of the Certificate message containing
         the end entity certificate being validated, using the format
         described below.
