@@ -602,6 +602,17 @@
       requires all TLS servers to support this protocol.
     </t>
 
+    <t>
+      One possible way to address the threat of attackers that have
+      fraudulently obtained valid PKIX credentials, is to use current
+      PKIX defense mechanisms, such as checking Certificate Transparency
+      logs to detect certificate misissuance. This may be necessary anyway,
+      as TLS servers may support both DANE and PKIX authentication. Even
+      TLS servers that support only DANE may be interested in detecting
+      PKIX adversaries impersonating their service to DANE unaware TLS
+      clients.
+    </t>
+
   </section>
 
 
