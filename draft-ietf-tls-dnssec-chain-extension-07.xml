@@ -121,7 +121,8 @@
       ability to avoid potential problems with TLS clients
       being unable to look up DANE records because of an
       interfering or broken middlebox on the path between
-      the client and a DNS server. And lastly, it allows a
+      the client and a DNS server <xref target="HAMPERING"/>.
+      And lastly, it allows a
       TLS client to validate the server's DANE (TLSA) records
       itself without needing access to a validating DNS resolver
       to which it has a secure connection.
@@ -701,6 +702,15 @@
     &rfc7901;
     <?rfc include="reference.I-D.agl-dane-serializechain.xml"?>
     <?rfc include="reference.I-D.draft-barnes-dane-uks-00.xml"?>
+    <reference anchor="HAMPERING"
+        target="http://www.nlnetlabs.nl/downloads/publications/os3-2015-rp2-xavier-torrent-gorjon.pdf">
+        <front>
+          <title>Discovery method for a DNSSEC validating stub resolver</title>
+          <author fullname="Xavier Torrent Gorjon" initials="X" surname="Gorjon" />
+          <author fullname="Willem Toorop" initials="W" surname="Toorop" />
+          <date year="2015" month="July" day="14"/>
+        </front>
+    </reference>
   </references>
 
   <section title="Test vectors">
