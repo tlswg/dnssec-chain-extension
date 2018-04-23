@@ -599,19 +599,8 @@
   <section title="Mandating use of this extension" anchor="mandating">
 
     <t>
-
       Green field applications that are designed to always employ this
       extension, could of course unconditionally mandate its use.
-    </t>
-
-    <t>
-      If TLS applications want to mandate the use of this extension for
-      specific servers, clients could maintain a whitelist of sites where
-      the use of this extension is forced. The client would refuse to
-      authenticate such servers if they failed to deliver this extension.
-      Client applications could also employ a Trust on First Use (TOFU) like
-      strategy, whereby they would record the fact that a server offered the
-      extension and use that knowledge to require it for subsequent connections.
     </t>
 
     <t>
