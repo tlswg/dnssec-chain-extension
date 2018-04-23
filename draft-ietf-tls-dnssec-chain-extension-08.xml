@@ -435,6 +435,33 @@
         </artwork>
       </figure>
 
+      <section title="Support for Authenticated Denial of Existence"
+        anchor="denial_of_existence">
+
+        <t>
+        TLS servers that do not have a signed TLSA record MAY instead
+        return a DNSSEC chain that provides authenticated denial of
+        existence. This specification does not require TLS servers to
+        provide such a denial of existence chain, otherwise it could
+        not be deployed incrementally in environments where not all TLS
+        servers support this extension.
+        </t>
+
+        <t>
+        Authenticated denial chains include NSEC or NSEC3 records
+        that demonstrate one of the following facts:
+        </t>
+
+        <t>
+        <list style="symbols">
+        <t>The TLSA record does not exist.</t>
+        <t>There is no signed delegation to a DNS zone which is either
+        an ancestor of, or the same as, the TLSA record name.</t>
+        </list>
+        </t>
+
+      </section>
+
     </section> <!-- authentication chain data -->
   </section> <!-- dnssec authentication chain extension -->
 
@@ -588,18 +615,17 @@
     </t>
 
     <t>
-      This protocol currently provides no way for a server to prove that
-      it doesn't have a TLSA record. Hence absent whitelists, a client
-      misdirected to a server that has fraudulently acquired a public CA
-      issued certificate for the real server's name, could be induced to
-      establish a PKIX verified connection to the rogue server that precluded
-      DANE authentication. This could be solved by enhancing this protocol
-      to require that servers without TLSA records need to provide a DNSSEC
-      authentication chain that proves this (i.e. the chain includes NSEC or
-      NSEC3 records that demonstrate either the absence of the TLSA record,
-      or the absence of a secure delegation to the associated zone). Such an
-      enhancement would be impossible to deploy incrementally though since it
-      requires all TLS servers to support this protocol.
+      This protocol allows TLS servers to prove that they don't have a
+      signed TLSA record by returning a denial of existence chain.
+      However, as explained in <xref target="denial_of_existence"/>,
+      it does not require TLS servers to do so. In the absence of such
+      a proof, a TLS client misdirected to a server that has fraudulently
+      acquired a public CA issued certificate for the real server's name,
+      could be induced to establish a PKIX verified connection to the rogue
+      server that precluded DANE authentication. Application ecosystems
+      where all TLS servers are expected to implement this extension could
+      require such authenticated denial proofs to be delivered by TLS
+      servers that don't have signed TLSA records.
     </t>
 
     <t>
