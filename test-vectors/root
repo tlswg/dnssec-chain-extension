@@ -6,8 +6,63 @@ $TTL 86400
 			604800     ; expire (1 week)
 			86400      ; minimum (1 day)
 			)
+.	NS	a.root-servers.net.
+.	NS	b.root-servers.net.
+.	NS	c.root-servers.net.
+.	NS	d.root-servers.net.
+.	NS	e.root-servers.net.
+.	NS	f.root-servers.net.
+.	NS	g.root-servers.net.
+.	NS	h.root-servers.net.
+.	NS	i.root-servers.net.
+.	NS	j.root-servers.net.
+.	NS	k.root-servers.net.
+.	NS	l.root-servers.net.
+.	NS	m.root-servers.net.
 com.	DS	18931 13 2 20f7a9db42d0e2042fbbb9f9ea015941202f9eabb94487e658c188e7bcb52115
 com.	DS	28809 13 2 ad66b3276f796223aa45eda773e92c6d98e70643bbde681db342a9e5cf2bb380
+com.	NS	a.gtld-servers.net.
+com.	NS	b.gtld-servers.net.
+com.	NS	c.gtld-servers.net.
+com.	NS	d.gtld-servers.net.
+com.	NS	e.gtld-servers.net.
+com.	NS	f.gtld-servers.net.
+com.	NS	g.gtld-servers.net.
+com.	NS	h.gtld-servers.net.
+com.	NS	i.gtld-servers.net.
+com.	NS	j.gtld-servers.net.
+com.	NS	k.gtld-servers.net.
+com.	NS	l.gtld-servers.net.
+com.	NS	m.gtld-servers.net.
+example.	DS	15903 13 2 7e0ebaf1cc0d309d4a73ca7d711719dd940f4da87b3d72865167650fc73ea577
+example.	NS	ns.ns-servers.example.
+net.	DS	485 13 2 ab25a2941aa7f1eb8688bb783b25587515a0cd8c247769b23adb13ca234d1c05
+net.	NS	a.gtld-servers.net.
+net.	NS	b.gtld-servers.net.
+net.	NS	c.gtld-servers.net.
+net.	NS	d.gtld-servers.net.
+net.	NS	e.gtld-servers.net.
+net.	NS	f.gtld-servers.net.
+net.	NS	g.gtld-servers.net.
+net.	NS	h.gtld-servers.net.
+net.	NS	i.gtld-servers.net.
+net.	NS	j.gtld-servers.net.
+net.	NS	k.gtld-servers.net.
+net.	NS	l.gtld-servers.net.
+net.	NS	m.gtld-servers.net.
 org.	DS	12651 13 2 3979a51f98bbf219fcaf4a4176e766dfa8f9db5c24a75743eb1e704b97a9fabc
 org.	DS	49352 13 2 03d11a1aa114abbb8f708c3c0ff0db765fef4a2f18920db5f58710dd767c293b
-net.	DS	485 13 2 ab25a2941aa7f1eb8688bb783b25587515a0cd8c247769b23adb13ca234d1c05
+org.	NS	a0.org.afilias-nst.info.
+org.	NS	a2.org.afilias-nst.info.
+org.	NS	b0.org.afilias-nst.org.
+org.	NS	b2.org.afilias-nst.org.
+org.	NS	c0.org.afilias-nst.info.
+org.	NS	d0.org.afilias-nst.org.
+info.	DS	8674 7 1 197789A2CBABA6FECD0B5AC88C5BC414CE1FC309
+info.	DS	8674 7 2 EC9B6082B96B5F87143696F2B483ACC9B2C433DCE0C94E70F1FF5648CA18008B
+info.	NS	a0.org.afilias-nst.info.
+info.	NS	a2.org.afilias-nst.info.
+info.	NS	b0.org.afilias-nst.org.
+info.	NS	b2.org.afilias-nst.org.
+info.	NS	c0.org.afilias-nst.info.
+info.	NS	d0.org.afilias-nst.org.

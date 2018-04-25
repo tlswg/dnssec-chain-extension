@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <getdns/getdns.h>
 #include <getdns/getdns_extra.h>
 
@@ -17,10 +18,14 @@ int main(int argc, const char **argv)
 	getdns_return_t dnssec_status;
 	char qname_str[1024];
 	getdns_bindata *qname;
+	getdns_return_t expected_dnssec_status = GETDNS_DNSSEC_SECURE;
 
-	if (argc != 5)
+	if (argc == 6)
+		expected_dnssec_status = (getdns_return_t)atoi(argv[5]);
+
+	if (argc != 5 && argc != 6)
 		fprintf(stderr, "usage: %s <trust anchor file> <chain file>"
-				" <domain name> <port>\n", argv[0]);
+				" <domain name> <port> [<expected dnssec status>]\n", argv[0]);
 
 	else if (snprintf( qname_str, sizeof(qname_str), "_%s._tcp.%s."
 	                 , argv[4], argv[3]) < 0)
@@ -91,7 +96,7 @@ int main(int argc, const char **argv)
 		fprintf(stderr, "Error setting request");
 
 	else if ((dnssec_status = getdns_validate_dnssec(
-	    to_validate, support, tas) != GETDNS_DNSSEC_SECURE)) {
+	    to_validate, support, tas)) != expected_dnssec_status) {
 		fprintf(stderr, "Chain did not validate");
 		r = dnssec_status;
 
@@ -125,8 +130,9 @@ int main(int argc, const char **argv)
 	if (ta_file) fclose(ta_file);
 	if (to_validate) getdns_list_destroy(to_validate);
 	if (r) {
-		if (r != GETDNS_RETURN_GENERIC_ERROR)
+		if (r != GETDNS_RETURN_GENERIC_ERROR) {
 			fprintf(stderr, ": %s\n", getdns_get_errorstr_by_id(r));
+		}
 		exit(EXIT_FAILURE);
 	}
 	return 0;
