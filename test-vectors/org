@@ -1,4 +1,4 @@
-$TTL 900
+$TTL 86400
 org.	SOA a0.org.afilias-nst.info. noc.afilias-nst.info. (
 		2012508852 ; serial
 		1800       ; refresh (30 minutes)
@@ -6,4 +6,30 @@ org.	SOA a0.org.afilias-nst.info. noc.afilias-nst.info. (
 		604800     ; expire (1 week)
 		86400      ; minimum (1 day)
 		)
+org.		NS	a0.org.afilias-nst.info.
+org.		NS	a2.org.afilias-nst.info.
+org.		NS	b0.org.afilias-nst.org.
+org.		NS	b2.org.afilias-nst.org.
+org.		NS	c0.org.afilias-nst.info.
+org.		NS	d0.org.afilias-nst.org.
+afilias-nst.org.	NS	a0.dig.afilias-nst.info.
+afilias-nst.org.	NS	b0.dig.afilias-nst.info.
+afilias-nst.org.	NS	c0.dig.afilias-nst.info.
+afilias-nst.org.	NS	d0.dig.afilias-nst.info.
 example.org.	DS	44384 13 2 ec307e2efc8f0117ed96ab48a513c8003e1d9121f1ff11a08b4cdd348d090aa6
+example.org.	NS	a.iana-servers.net.
+example.org.	NS	b.iana-servers.net.
+icann.org.	NS	a.iana-servers.net.
+icann.org.	NS	b.iana-servers.net.
+icann.org.	NS	c.iana-servers.net.
+icann.org.	NS	ns.icann.org.
+icann.org.	DS	17248 7 1 88151C40E4673E7023E6AD1902A8AE055F3DDF61
+icann.org.	DS	17248 7 2 885CF8A6CF35FD5C619E1D48B59AFB23063BBA9FEC52FF25F99094CBA10910A2
+icann.org.	DS	18060 7 1 04CF77A76FD328458005D2B35E416F209A3420A0
+icann.org.	DS	18060 7 2 6BE021818B9F10ED981A03ACBF74F01E31FB15C58680AD0C4BAA464BF37A7523
+icann.org.	DS	32134 7 1 3D54D51109645E8315F59790B920323D361B065F
+icann.org.	DS	32134 7 2 6C321409786B95BEEE60E6D42F3713ACC3A9B5D18442091A792FBDD1EA8E4655
+icann.org.	DS	41334 7 1 49D712CF7A8984B7545FDC7E69D7372782339B3A
+icann.org.	DS	41334 7 2 C299FAF7D6F9BCB310200ECF2EA216A2E83F7ACB15C8D72D79641FA8DFACF9A9
+icann.org.	DS	41643 7 1 93358DB22E956A451EB5AE8D2EC39526CA6A87B9
+icann.org.	DS	41643 7 2 B8AB67D895E62087F0C5FC5A1A941C67A18E4B096F6C622AEFAE30DD7B1EA199
