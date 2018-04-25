@@ -159,15 +159,11 @@
     </t>
 
     <t>
-      As explained later in the draft, this specification can also be used
-      to demonstrate that a TLS server has no secure TLSA record, by
-      providing a DNSSEC authenticated denial of existence chain. However,
-      it does not require TLS servers to do so, because that would be
-      difficult to incrementally deploy in an environment where not all
-      TLS servers support the extension. Hence restrictive uses of this
-      extension (such as the PKIX constraining modes of DANE, or where
-      DANE should always be preferred over other modes of authentication
-      such as traditional PKIX) are not in its intended scope. Such
+      This specification can also be used to optionally convey authenticated
+      denial of existence of TLSA records. Restrictive uses that might
+      require such proofs (such as the PKIX constraining modes of DANE, or
+      where DANE should always be preferred over other modes of authentication
+      such as traditional PKIX) are thus not in its intended scope. Such
       restrictive uses can however be supported opportunistically.
     </t>
 
