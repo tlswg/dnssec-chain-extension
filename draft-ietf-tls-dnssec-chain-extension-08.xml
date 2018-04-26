@@ -150,12 +150,15 @@
     <t>
       The extension described here allows a TLS client to request that
       the TLS server return the DNSSEC authentication chain corresponding
-      to its DANE record. If the server is configured for DANE authentication,
-      then it performs the appropriate DNS queries, builds the authentication
-      chain, and returns it to the client. The server will usually use a
-      previously cached authentication chain, but it will need to rebuild it
-      periodically as described in <xref target="sec_caching" />. The client
-      then authenticates the chain using a pre-configured trust anchor.
+      to its DNSSEC-validated DANE TLSA resource record set (RRset), or
+      authenticated denial of existence of such an RRset (as described in
+      <xref target="denial_of_existence"/>). If the server
+      supports this extension it performs the appropriate DNS queries,
+      builds the authentication chain, and returns it to the client.  The
+      server will usually use a previously cached authentication chain, but
+      it will need to rebuild it periodically as described in <xref
+      target="sec_caching"/>. The client then authenticates the chain
+      using a pre-configured trust anchor.
     </t>
 
     <t>
@@ -367,23 +370,39 @@
       </t>
 
       <t>
-        The first RRset in the chain MUST contain the TLSA record set
-        being presented. However, if the owner name of the TLSA record
-        set is an alias (CNAME or DNAME), then it MUST be preceded by the
-        chain of alias records needed to resolve it. DNAME chains SHOULD
-        omit unsigned CNAME records that may have been synthesized in the
-        response from a DNS resolver. (If unsigned synthetic CNAMES are
-        present, then the TLS client will just ignore them, as they are
-        not necessary to validate the chain.)
+        If the owner name of the TLSA RRset is an alias (CNAME or DNAME),
+        then the chain of signed alias records MUST appear first in the
+        AuthenticationChain. If at some point along the alias chain the
+        target of an alias leads to an unsigned zone, the response will be a
+        denial of existence response proving insecure delegation of that
+        zone.  DNAME chains SHOULD omit unsigned CNAME records that may have
+        been synthesized in the response from a DNS resolver. (If unsigned
+        synthetic CNAMES are present, then the TLS client will just ignore
+        them, as they are not necessary to validate the chain.)
       </t>
 
       <t>
-        The subsequent RRsets MUST contain the full set
-        of DNS records needed to authenticate the TLSA record set from the
-        server's trust anchor. Typically this means a set of DNSKEY
-        and DS RRsets that cover all zones from the target zone containing
-        the TLSA record set to the trust anchor zone. The TLS client should
-        be prepared to receive this set of RRsets in any order.
+        When the response contains validated TLSA records, the next (barring
+        aliases, first) RRset in the chain MUST contain the TLSA record set
+        being presented.
+      </t>
+
+      <t>
+      When the response is an authenticated denial of existence, the next
+      (barring aliases, first) set of RRsets in the chain MUST be the signed
+      NSEC or NSEC3 records proving the non-existence of the TLSA RRset or
+      insecure delegation as described in <xref
+      target="denial_of_existence"/>.
+      </t>
+
+      <t>
+        The subsequent RRsets MUST contain the full set of DNS records
+        needed to authenticate the TLSA record set or denial of existence
+        response via the server's trust anchor.  Typically this means a set
+        of DNSKEY and DS RRsets that cover all zones from the target zone
+        containing the TLSA record set to the trust anchor zone. The TLS
+        client should be prepared to receive this set of RRsets in any
+        order.
       </t>
 
       <t>
@@ -435,6 +454,61 @@
         </artwork>
       </figure>
 
+      <t>
+        The following is an example of denial of existence for a TLSA
+        RRset at "_443._tcp.www.example.com". The NSEC record in this
+        example asserts the non-existence of both the requested RRset
+        and any potentially relevant wildcard records.
+      </t>
+
+      <figure>
+        <artwork>
+example.com. IN NSEC (www.example.com.
+    DNSKEY SOA NS NSEC RRSIG)
+RRSIG(example.com. NSEC)
+example.com. DNSKEY
+RRSIG(example.com. DNSKEY)
+example.com. DS
+RRSIG(example.com. DS)
+com. DNSKEY
+RRSIG(com. DNSKEY)
+com. DS
+RRSIG(com. DS)
+. DNSKEY
+RRSIG(. DNSKEY)
+        </artwork>
+      </figure>
+
+      <t>
+        The following is an example of (hypothetical) insecure delegation of
+        "example.com" from the ".com" zone. This example shows NSEC3
+        records with opt-out.
+      </t>
+
+      <figure>
+        <artwork>
+; covers example.com
+onib9mgub9h0rml3cdf5bgrj59dkjhvj.com. NSEC3 (1 1 0 -
+  onib9mgub9h0rml3cdf5bgrj59dkjhvl NS DS RRSIG)
+RRSIG(onib9mgub9h0rml3cdf5bgrj59dkjhvj.com. NSEC3)
+; covers *.com
+3rl2r262eg0n1ap5olhae7mah2ah09hi.com. NSEC3 (1 1 0 -
+  3rl2r262eg0n1ap5olhae7mah2ah09hk NS DS RRSIG)
+RRSIG(3rl2r262eg0n1ap5olhae7mah2ah09hj.com. NSEC3)
+; closest-encloser "com"
+ck0pojmg874ljref7efn8430qvit8bsm.com. NSEC3 (1 1 0 -
+  ck0pojmg874ljref7efn8430qvit8bsm.com
+  NS SOA RRSIG DNSKEY NSEC3PARAM)
+RRSIG(ck0pojmg874ljref7efn8430qvit8bsm.com. NSEC3)
+com. DNSKEY
+RRSIG(com. DNSKEY)
+com. DS
+RRSIG(com. DS)
+. DNSKEY
+RRSIG(. DNSKEY)
+        </artwork>
+      </figure>
+
       <section title="Support for Authenticated Denial of Existence"
         anchor="denial_of_existence">
 
@@ -444,12 +518,16 @@
         existence. This specification does not require TLS servers to
         provide such a denial of existence chain, otherwise it could
         not be deployed incrementally in environments where not all TLS
-        servers support this extension.
+        servers support this extension. Servers MAY instead decline to
+        use this extension.
         </t>
 
         <t>
-        Authenticated denial chains include NSEC or NSEC3 records
-        that demonstrate one of the following facts:
+        If the extension is not declined, it MUST contain either
+        authenticated TLSA records or authenticated denial of
+        existence.  Authenticated denial of existence chains include
+        NSEC or NSEC3 records that demonstrate one of the following
+        facts:
         </t>
 
         <t>
@@ -543,14 +621,19 @@
   <section title="Verification" anchor="sec_verification">
 
     <t>
-      A TLS client making use of this specification, and
-      which receives a DNSSEC authentication chain extension
-      from a server, MUST use this information to perform
-      DANE authentication of the server.  In
-      order to do this, it uses the mechanism specified by
-      the DNSSEC protocol <xref target="RFC4035"/> <xref target="RFC5155"/>.
-      This mechanism is sometimes implemented in a DNSSEC
-      validation engine or library.
+      A TLS client making use of this specification, and which receives a
+      DNSSEC authentication chain extension from a server, SHOULD use this
+      information to perform DANE authentication of the server when the
+      response is not a denial of existence and has at least one "usable"
+      TLSA record as defined in <xref target="RFC6698"/> or other applicable
+      specification (perhaps application-specific).
+    </t>
+
+    <t>
+      Verification of the authentication chain extension uses the mechanism
+      specified by the DNSSEC protocol <xref target="RFC4035"/> <xref
+      target="RFC5155"/>.  This mechanism is sometimes implemented in a
+      DNSSEC validation engine or library.
     </t>
 
     <t>
@@ -569,6 +652,11 @@
       dnssec_chain extension for subsequent connections to the same TLS
       server. It can use the cached information to perform DANE
       authentication.
+    </t>
+
+    <t>
+      Clients MAY also cache a denial of existence response up to the
+      validated negative TTL of such a response.
     </t>
 
   </section> <!-- verification -->
@@ -611,7 +699,7 @@
       a proof, a TLS client misdirected to a server that has fraudulently
       acquired a public CA issued certificate for the real server's name,
       could be induced to establish a PKIX verified connection to the rogue
-      server that precluded DANE authentication. Application ecosystems
+      server that simply omits this extension. Application ecosystems
       where all TLS servers are expected to implement this extension could
       require such authenticated denial proofs to be delivered by TLS
       servers that don't have signed TLSA records.
@@ -807,7 +895,7 @@ wDSiIIWIWJiJGbEeIO0TIFwEVWTOnbNl/faPXpk5IRXicapqiII=
 -----END CERTIFICATE-----
       </artwork>
     </figure>
-    <t>For brevity and reproducability all DNS zones involved with the test vectors
+    <t>For brevity and reproducibility all DNS zones involved with the test vectors
     are signed using keys with algorithm 13: ECDSA Curve P-256 with SHA-256.</t>
     <t>To reflect operational practice, different zones in the examples are in
     different phases of rolling their signing keys:
