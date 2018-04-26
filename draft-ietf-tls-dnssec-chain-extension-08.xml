@@ -304,13 +304,29 @@
 
       <figure>
         <artwork>
-
-          opaque AuthenticationChain&lt;1..2^16-1&gt;
+    struct {
+        uint16 SupportLifetime;
+        opaque AuthenticationChain&lt;1..2^16-1&gt;;
+    } DnssecChainExtension;
         </artwork>
       </figure>
 
       <t>
-    The AuthenticationChain structure is composed of a sequence of 
+      A zero "SupportLifetime" prohibits the client from unilaterally
+      requiring ongoing use of the extension based on prior observation
+      of its use (pinning).
+      </t>
+
+      <t>
+      A future specification will define the semantics of non-zero
+      values of the SupportLifetime field.  Servers implementing only
+      the present specification MUST set the SupportLifetime element
+      to zero.  Clients implementing only the present specification MUST
+      treat any value received as though it were zero.
+      </t>
+
+      <t>
+    The AuthenticationChain is composed of a sequence of
     uncompressed wire format DNS resource record sets (RRset) and 
     corresponding signatures (RRSIG) record sets.
       </t>
@@ -689,6 +705,15 @@ RRSIG(. DNSKEY)
     <t>
       Green field applications that are designed to always employ this
       extension, could of course unconditionally mandate its use.
+    </t>
+
+    <t>
+      Pending a future specification that defines the semantics of
+      non-zero values of the SupportLifetime element of the extension,
+      clients MUST NOT employ "pinning" to require use of the extension
+      by servers previously observed to support it.  Servers that
+      implement only this specification MUST set the SupportLifetime
+      element to zero.
     </t>
 
     <t>
