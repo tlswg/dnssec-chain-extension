@@ -159,6 +159,15 @@
     </t>
 
     <t>
+      This specification can also be used to optionally convey authenticated
+      denial of existence of TLSA records. Restrictive uses that might
+      require such proofs (such as the PKIX constraining modes of DANE, or
+      where DANE should always be preferred over other modes of authentication
+      such as traditional PKIX) are thus not in its intended scope. Such
+      restrictive uses can however be supported opportunistically.
+    </t>
+
+    <t>
       This specification is based on Adam Langley's original
       proposal for serializing DNSSEC authentication chains
       and delivering them in an X.509 certificate extension
