@@ -1329,12 +1329,6 @@ com.  86400  IN  RRSIG  ( DS 13 1 86400 20181128000000
     <section title="_25._tcp.smtp.example.com NSEC Denial of Existence">
       <figure>
         <artwork>
-example.com.  3600  IN  SOA  ( sns.dns.icann.org. noc.dns.icann.org.
-        2017042720 7200 3600 1209600 3600)
-example.com.  3600  IN  RRSIG  ( SOA 13 2 3600 20181128000000
-        20151103000000 1870 example.com.
-        tWkHhuCyJuVQ6M+7Ql1A1N+NlJvL1K7KbvCLKKemqAEn/w/67iap58VmGOJ53
-        6Iwk8hA9kANMCtOcKS61CDr1g== )
 smtp.example.com.  3600  IN  NSEC  ( www.example.com. A AAAA
         RRSIG NSEC )
 smtp.example.com.  3600  IN  RRSIG  ( NSEC 13 3 3600
@@ -1398,12 +1392,6 @@ com.  86400  IN  RRSIG  ( DS 13 1 86400 20181128000000
     <section title="_25._tcp.smtp.example.org NSEC3 Denial of Existence">
       <figure>
         <artwork>
-example.org.  3600  IN  SOA  ( sns.dns.icann.org.  noc.dns.icann.org.
-        2017042720 7200 3600 1209600 3600)
-example.org.  3600  IN  RRSIG  ( SOA 13 2 3600 20181128000000
-        20151103000000 56566 example.org.
-        cdTd84awnFIxn4KKGbC0AmkOXmWxcd3KNaY8+sXcM2CrG+ER0boo00kYfoXRM
-        Mnsz5UZe0WkbJXQQaeaLG5Jxg== )
 vkv62jbv85822q8rtmfnbhfnmnat9ve3.example.org.  3600  IN  NSEC3  (
         1 0 1 - 93u63bg57ppj6649al2n31l92iedkjd6 A AAAA RRSIG )
 vkv62jbv85822q8rtmfnbhfnmnat9ve3.example.org.  3600  IN  RRSIG  (
@@ -1488,13 +1476,6 @@ org.  86400  IN  RRSIG  ( DS 13 1 86400 20181128000000
     <section title="_443._tcp.www.insecure.example NSEC3 opt-out insecure delegation">
       <figure>
         <artwork>
-example.  432000  IN  SOA  ( ns.ns-servers.example.
-        hostmaster.ns-servers.example. 2018042500 1800 900 604800
-        43200 )
-example.  432000  IN  RRSIG  ( SOA 13 1 432000 20181128000000
-        20151103000000 15903 example.
-        QvaC/JXrXdpmK9kFcZ6AUD5NcRn+7n6bWZdtExVwhwASoWsyI3XUebewHmOub
-        LjTaR7jWKBZVdusAyJy+GasFg== )
 c1kgc91hrn9nqi2qjh1ms78ki8p7s75o.example.  43200  IN  NSEC3  (
         1 1 1 - shn05itmoa45mmnv74lc4p0nnfmimtjt NS SOA RRSIG DNSKEY
         NSEC3PARAM )
