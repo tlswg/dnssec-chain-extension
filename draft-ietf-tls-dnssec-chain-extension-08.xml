@@ -379,10 +379,12 @@
       </t>
 
       <t>
-        If the owner name of the TLSA RRset is an alias (CNAME or DNAME),
+        The chain of records appears in logical order for validation.
+        If the owner name of the TLSA RRset is an alias (e.g., CNAME or DNAME),
         then the chain of signed alias records MUST appear first in the
-        AuthenticationChain. If at some point along the alias chain the
-        target of an alias leads to an unsigned zone, the response will be a
+        AuthenticationChain; otherwise, the TLSA RRset appears first.
+        If at some point along the alias chain the
+        target of an alias leads to an unsigned zone, the response will include a
         denial of existence response proving insecure delegation of that
         zone.  DNAME chains SHOULD omit unsigned CNAME records that may have
         been synthesized in the response from a DNS resolver. (If unsigned
@@ -391,7 +393,7 @@
       </t>
 
       <t>
-        When the response contains validated TLSA records, the next (barring
+        When the response contains valid TLSA records, the next (barring
         aliases, first) RRset in the chain MUST contain the TLSA record set
         being presented.
       </t>
@@ -399,17 +401,18 @@
       <t>
       When the response is an authenticated denial of existence, the next
       (barring aliases, first) set of RRsets in the chain MUST be the signed
-      NSEC or NSEC3 records proving the non-existence of the TLSA RRset or
-      insecure delegation as described in <xref
+      records (e.g., NSEC or NSEC3) proving the non-existence of the TLSA RRset or of
+      insecure delegation, as described in <xref
       target="denial_of_existence"/>.
       </t>
 
       <t>
-        The subsequent RRsets MUST contain the full set of DNS records
+        Following the TLSA or denial of existence RRset,
+        the subsequent RRsets MUST contain the full set of DNS records
         needed to authenticate the TLSA record set or denial of existence
         response via the server's trust anchor.  Typically this means a set
         of DNSKEY and DS RRsets that cover all zones from the target zone
-        containing the TLSA record set to the trust anchor zone. The TLS
+        containing the TLSA or NSEC/NSEC3 record set to the trust anchor zone. The TLS
         client should be prepared to receive this set of RRsets in any
         order.
       </t>
@@ -532,7 +535,7 @@ RRSIG(. DNSKEY)
         </t>
 
         <t>
-        If the extension is not declined, it MUST contain either
+        If the extension is negotiated, it MUST contain either
         authenticated TLSA records or authenticated denial of
         existence.  Authenticated denial of existence chains include
         NSEC or NSEC3 records that demonstrate one of the following
@@ -631,7 +634,7 @@ RRSIG(. DNSKEY)
 
     <t>
       A TLS client making use of this specification, and which receives a
-      DNSSEC authentication chain extension from a server, SHOULD use this
+      DNSSEC authentication chain extension from a server, uses this
       information to perform DANE authentication of the server when the
       response is not a denial of existence and has at least one "usable"
       TLSA record as defined in <xref target="RFC6698"/> or other applicable
@@ -639,7 +642,7 @@ RRSIG(. DNSKEY)
     </t>
 
     <t>
-      Verification of the authentication chain extension uses the mechanism
+      Verification of the AuthenticationChain contents uses the mechanism
       specified by the DNSSEC protocol <xref target="RFC4035"/> <xref
       target="RFC5155"/>.  This mechanism is sometimes implemented in a
       DNSSEC validation engine or library.
@@ -652,20 +655,15 @@ RRSIG(. DNSKEY)
     </t>
 
     <t>
-      Clients MAY cache the server's validated TLSA RRset or other
-      validated portions of the chain as an optimization to save
-      signature verification work for future connections. The
+      DNS responses have associated TTLs, and clients MAY cache
+      DNS responses obtained via this extension for the duration of
+      the validated (negative, for denial of existence records) TTL.
+      The
       period of such caching MUST NOT exceed the TTL associated with
       those records. A client that possesses a validated and unexpired
-      TLSA RRset or the full chain in its cache does not need to send the
+      TLSA RRset, complete chain, or denial of existence in its cache does not need to send the
       dnssec_chain extension for subsequent connections to the same TLS
-      server. It can use the cached information to perform DANE
-      authentication.
-    </t>
-
-    <t>
-      Clients MAY also cache a denial of existence response up to the
-      validated negative TTL of such a response.
+      server during the validity period; it can use the cached information instead of what it would have obtained in the server's response to the extension.
     </t>
 
   </section> <!-- verification -->
@@ -708,7 +706,7 @@ RRSIG(. DNSKEY)
       a proof, a TLS client misdirected to a server that has fraudulently
       acquired a public CA issued certificate for the real server's name,
       could be induced to establish a PKIX verified connection to the rogue
-      server that simply omits this extension. Application ecosystems
+      server, which is not obligated to respond to this extension. Application ecosystems
       where all TLS servers are expected to implement this extension could
       require such authenticated denial proofs to be delivered by TLS
       servers that don't have signed TLSA records.
