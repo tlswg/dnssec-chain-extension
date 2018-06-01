@@ -12,7 +12,6 @@
 <!ENTITY rfc5905 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5905.xml">
 <!ENTITY rfc6066 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6066.xml">
 <!ENTITY rfc6698 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6698.xml">
-<!ENTITY rfc7120 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7120.xml">
 <!ENTITY rfc7250 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7250.xml">
 <!ENTITY rfc7590 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7590.xml">
 <!ENTITY rfc7633 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7633.xml">
@@ -935,7 +934,6 @@ RRSIG(. DNSKEY)
     &rfc3261;
     &rfc5011;
     &rfc5905;
-    &rfc7120;
     &rfc7250;
     &rfc7590;
     &rfc7672;
