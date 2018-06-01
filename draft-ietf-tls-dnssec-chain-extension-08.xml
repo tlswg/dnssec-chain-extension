@@ -85,7 +85,8 @@
       intent of this proposal is to allow TLS clients to
       perform DANE authentication of a TLS server
       without needing to perform additional DNS
-      record lookups.  It is not intended to be used to validate
+      record lookups, in certain situations.
+      It is not intended to be used to validate
       the TLS server's address records.
     </t>
   </abstract>
@@ -117,7 +118,9 @@
       <xref target="RFC7671" /> of a TLS
       server without performing
       additional DNS record lookups and incurring the
-      associated latency penalty. It also provides the
+      associated latency penalty, but inherent difficulties
+      with having multiple distinct trust hierarchies can limit
+      its applicability in some situations. It also provides the
       ability to avoid potential problems with TLS clients
       being unable to look up DANE records because of an
       interfering or broken middlebox on the path between
@@ -291,7 +294,13 @@
       <t>The mechanism for conveying DNSSEC validation
         chains described in this document results in a
         commitment by both parties, via the TLS
-        handshake, to a validated domain name and EE key.</t>
+        handshake, to a validated domain name and EE key.
+        Specifically, the relevant DANE records are included
+        in the TLS handshake transcript hash, so both sides
+        possess identical records; the client remains responsible
+        for actually performing the domain name validation of
+        the DANE records.
+      </t>
 
       <t>The mechanism for encoding DNSSEC authentication
         chains in a TLS extension, as described in this
@@ -314,9 +323,18 @@
       <figure>
         <artwork>
 
+          opaque Reserved&lt;0..255&gt;
           opaque AuthenticationChain&lt;1..2^16-1&gt;
         </artwork>
       </figure>
+
+      <t>
+    The Reserved field is reserved for future updates to this
+    document; in particular it is hoped that the issues discussed
+    in <xref target="increasing-trust" /> can be addressed.
+    Implementations of this specification MUST send a zero-length vector
+    and ignore the field on receipt.
+      </t>
 
       <t>
     The AuthenticationChain structure is composed of a sequence of 
@@ -691,47 +709,14 @@ RRSIG(. DNSKEY)
   </section> <!-- trust anchor maintenance  -->
 
 
-  <section title="Mandating use of this extension" anchor="mandating">
-
-    <t>
-      Green field applications that are designed to always employ this
-      extension, could of course unconditionally mandate its use.
-    </t>
-
-    <t>
-      This protocol allows TLS servers to prove that they don't have a
-      signed TLSA record by returning a denial of existence chain.
-      However, as explained in <xref target="denial_of_existence"/>,
-      it does not require TLS servers to do so. In the absence of such
-      a proof, a TLS client misdirected to a server that has fraudulently
-      acquired a public CA issued certificate for the real server's name,
-      could be induced to establish a PKIX verified connection to the rogue
-      server, which is not obligated to respond to this extension. Application ecosystems
-      where all TLS servers are expected to implement this extension could
-      require such authenticated denial proofs to be delivered by TLS
-      servers that don't have signed TLSA records.
-    </t>
-
-    <t>
-      One possible way to address the threat of attackers that have
-      fraudulently obtained valid PKIX credentials, is to use current
-      PKIX defense mechanisms, such as checking Certificate Transparency
-      logs to detect certificate misissuance. This may be necessary anyway,
-      as TLS servers may support both DANE and PKIX authentication. Even
-      TLS servers that support only DANE may be interested in detecting
-      PKIX adversaries impersonating their service to DANE unaware TLS
-      clients.
-    </t>
-
-  </section>
-
-
   <section title="DANE and Traditional PKIX Interoperation" anchor="pkix-interop">
 
     <t>
       When DANE is being introduced incrementally into an existing
       PKIX environment, there may be scenarios in which DANE
       authentication for a server fails but PKIX succeeds, or vice versa.
+      Some consequences of such scenarios are further discussed in
+      <xref target="increasing-trust" />
       What happens here depends on TLS client policy. If DANE authentication
       fails, the client may decide to fallback to traditional PKIX
       authentication. In order to do so efficiently within the same
@@ -765,9 +750,119 @@ RRSIG(. DNSKEY)
       today. TLS clients MUST support a mechanism to track and rollover 
       the trust anchor key, or be able to avail themselves of a service 
       that does this, as described in <xref target="sec_trustmaint" />.
-      Security considerations related to mandating the use of this
-      extension are described in <xref target="mandating" />.
     </t>
+
+
+      <section title="Issues with Incremental Deployment" anchor="increasing-trust">
+
+        <t>
+          Green field applications that are designed to always employ this
+          extension, could of course unconditionally mandate its use (whether
+          or not to the exclusion of PKIX authentication).
+        </t>
+
+        <t>
+          Other applications seeking to use the functionality provided
+          by this extension will necessarily undergo some form of
+          transition period during which both PKIX and DANE are valid
+          ways to authenticate a TLS server (again, regardless of whether
+          used alone or in combination).  This places the TLS client in
+          the position of having two (sets of) trust anchors that can be
+          used to validate TLS server identities -- PKIX and DANE.  In
+          general, this type of situation restricts the security
+          properties of the system to those of the weakest trust anchor
+          in the trusted set -- in effect, adding a new trust anchor
+          makes some usages less secure.  Clients that believe the DNS
+          certification chain for a given site to be weaker than PKIX
+          gain no benefit from using this extension, so we consider only
+          the case where DANE is considered equivalent to or
+          more-trusted than PKIX, and thus the case of an attack on PKIX.
+        </t>
+
+        <t>
+          This protocol allows TLS servers to prove that they don't have a
+          signed TLSA record by returning a denial of existence chain
+          (and thus, in a transition scenario considered here, that PKIX
+          should be used for authenticating the server).
+          However, as explained in <xref target="denial_of_existence"/>,
+          it does not require TLS servers to do so. In the absence of such
+          a proof, a TLS client misdirected to a server that has fraudulently
+          acquired a public CA issued certificate for the real server's name,
+          could be induced to establish a PKIX verified connection to the rogue
+          server, which is not obligated to respond to this extension.
+          Current PKIX defense mechanisms such as Certificate
+          Transparency can be of use in this case, but are generally not
+          able to prevent attacks as they happen.
+        </t>
+
+        <t>
+          This type of attack is a natural consequence of allowing the
+          additional trust anchor, as an attacker can choose which
+          factor to target, whereas the defenders must attempt to secure
+          all pathways.  Ideally, for a given server, a client would
+          know a priori which mechanism(s) are supported by the (actual)
+          server, and set its expectations accordingly for what form(s)
+          of authentication to use.  However, absent preconfiguration,
+          the client initially has no knowledge of the server's support
+          for DANE (support for PKIX is implicit in the incremental
+          adoption scenario), and must rely on the communication peer
+          (and the trust anchors) to provide a reliable indication of
+          which mechanisms are supported.  Returning a DANE chain with
+          TLSA records clearly indicates support for DANE.  DNSSEC
+          authenticated denial of existence (for TLSA records) provides
+          an indication, certified by the DNS key hierarchy, that the
+          server does not support DANE authentication, but under the
+          assumptions of this specification, there may not be a reliable
+          way to obtain such DNS records.  PKIX, being a separate trust
+          hierachy, is not authoritative to indicate the lack of a DANE
+          certification for a given DNS name, so the mere absence of
+          this extension in a PKIX-authenticated TLS server's response
+          does not give any data about the presence or absence of a DANE
+          certification.
+        </t>
+
+        <t>
+          A natural tendency is to use past evidence of protocol support
+          as indication of future support for the protocol (i.e.,
+          "pinning") as a partial remediation.  An example of this would be a
+          "trust-on-first-use" scenario, where a client uses an initial
+          connection to a server to determine (lack of) support for this
+          extension, and if the first connection uses this extension,
+          assume that all future connections to the same server will
+          also support this extension.  Accordingly, a subsequent
+          connection to that server that does not use this extension
+          would be an indication of an attack, and grounds for the
+          client to abort the connection.  Unfortunately, this example
+          is overly simplistic, and does not account for situations
+          where what presents as a single "server" is actually a "server
+          farm" with multiple independent backends, which may not have
+          uniform support for a given feature; it also does not account
+          for situations where an operator wishes to administratively
+          disable the use of a feature without breakage.  Other
+          subtleties and complications are possibly not yet known (in
+          addition to the inherent limitations of pinning as not
+          applying to the initial connection and requiring repeated
+          visits during the window of the pin in order to avoid
+          reintroducing that limitation), and a
+          comprehensive solution not yet available.  Nonetheless, this
+          document is being published without a remediation strategy in
+          order to allow for deployments in scenarios where the issues
+          due to multiple trust anchors do not arise.  It is expected
+          that the Reserved field can be used to support a remediation
+          strategy in a backwards-compatible fashion.
+        </t>
+
+        <t>
+          Due to the myriad of potential complications listed above,
+          implementations of this specification MUST NOT treat support
+          for this extension on one connection as indication of support
+          for this extension on future connections (i.e., must not
+          "pin").  Pinning may still be permitted given additional
+          application-specific or preconfigured knowledge about a given
+          server.
+        </t>
+
+      </section>
 
   </section>
 
