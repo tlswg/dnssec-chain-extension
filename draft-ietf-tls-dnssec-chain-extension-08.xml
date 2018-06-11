@@ -479,9 +479,9 @@
 
       <figure>
         <artwork>
-example.com. IN NSEC (www.example.com.
+www.example.com. IN NSEC (example.com.
     DNSKEY SOA NS NSEC RRSIG)
-RRSIG(example.com. NSEC)
+RRSIG(www.example.com. NSEC)
 example.com. DNSKEY
 RRSIG(example.com. DNSKEY)
 example.com. DS
